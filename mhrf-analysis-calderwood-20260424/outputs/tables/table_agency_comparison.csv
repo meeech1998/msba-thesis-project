@@ -1,0 +1,5 @@
+response_model,n,severity_rate,involuntary_rate,force_rate,injury_rate,repeat_rate
+Behavioral Health Only,245,0.041,0.02,0.004,0.024,0.292
+Co-Response,175,0.48,0.526,0.086,0.109,0.333
+Law Enforcement Only,434,0.583,0.634,0.101,0.159,0.192
+Other,7,0.143,0.143,0.143,0.0,0.4

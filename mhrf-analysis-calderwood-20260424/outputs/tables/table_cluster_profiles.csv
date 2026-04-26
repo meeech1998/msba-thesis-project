@@ -1,0 +1,4 @@
+risk_level,n,severity,repeat,Anger,Manic,Confusion,Depression,Hallucinations,Scared,Substance,Unhoused,Repeat,Involuntary
+High Risk,347,0.841,0.262,0.282,0.207,0.32,0.308,0.101,0.164,0.346,0.233,0.262,1.0
+Low Risk,145,0.055,0.221,0.048,0.055,0.076,1.0,0.069,0.09,0.221,0.331,0.221,0.0
+Moderate Risk,322,0.075,0.255,0.075,0.096,0.189,0.0,0.18,0.186,0.236,0.339,0.255,0.0
