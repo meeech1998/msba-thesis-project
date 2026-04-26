@@ -1,0 +1,3288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Paper to Prediction | Michelle Calderwood MSBA Capstone Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* ═══════════════════════════════════════════
+   DESIGN SYSTEM
+   ═══════════════════════════════════════════ */
+:root {
+  --bg-deep: #050816;
+  --bg-primary: #0a0e1a;
+  --bg-secondary: #0f1629;
+  --bg-card: #141b2d;
+  --bg-card-hover: #1a2340;
+  --bg-elevated: #1e2a45;
+
+  --accent: #6366f1;
+  --accent-light: #818cf8;
+  --accent-soft: rgba(99, 102, 241, 0.12);
+  --accent-glow: rgba(99, 102, 241, 0.25);
+
+  --teal: #14b8a6;
+  --teal-light: #5eead4;
+  --teal-soft: rgba(20, 184, 166, 0.12);
+
+  --rose: #a78bfa;
+  --rose-soft: rgba(167, 139, 250, 0.12);
+
+  --amber: #fb923c;
+  --amber-soft: rgba(251, 146, 60, 0.12);
+
+  --emerald: #38bdf8;
+  --emerald-soft: rgba(56, 189, 248, 0.12);
+
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-dim: #475569;
+
+  --border: rgba(148, 163, 184, 0.08);
+  --border-hover: rgba(148, 163, 184, 0.15);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  line-height: 1.7;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: var(--accent); color: white; }
+
+/* ═══════════════════════════════════════════
+   NAVIGATION
+   ═══════════════════════════════════════════ */
+nav {
+  position: fixed; top: 0; width: 100%; z-index: 1000;
+  padding: 1.25rem 2rem;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+nav.scrolled {
+  background: rgba(5, 8, 22, 0.92);
+  backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+  padding: 0.75rem 2rem;
+}
+.nav-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.nav-logo {
+  font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700;
+  color: var(--text-primary); text-decoration: none; letter-spacing: -0.02em;
+}
+.nav-links { display: flex; gap: 1.5rem; list-style: none; }
+.nav-links a {
+  color: var(--text-muted); text-decoration: none; font-size: 0.72rem;
+  font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+  transition: color 0.3s; position: relative;
+}
+.nav-links a::after {
+  content: ''; position: absolute; bottom: -4px; left: 0;
+  width: 0; height: 2px; background: var(--accent); transition: width 0.3s;
+}
+.nav-links a:hover, .nav-links a.active { color: var(--accent-light); }
+.nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+
+/* ═══════════════════════════════════════════
+   HERO  FULL VIEWPORT CINEMATIC OPENER
+   ═══════════════════════════════════════════ */
+.hero {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden; padding: 2rem;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(99,102,241,0.15) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 75% 20%, rgba(20,184,166,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 50% 90%, rgba(167,139,250,0.05) 0%, transparent 50%);
+}
+.hero-grid-bg {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(99,102,241,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99,102,241,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+}
+.hero-particles { position: absolute; inset: 0; overflow: hidden; }
+.particle {
+  position: absolute; border-radius: 50%; opacity: 0;
+  animation: floatUp 10s infinite ease-out;
+}
+@keyframes floatUp {
+  0% { opacity: 0; transform: translateY(100vh) scale(0); }
+  15% { opacity: 0.7; }
+  85% { opacity: 0.5; }
+  100% { opacity: 0; transform: translateY(-10vh) scale(1); }
+}
+.hero-content { position: relative; z-index: 2; text-align: center; max-width: 860px; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.5rem 1.5rem; border: 1px solid rgba(99,102,241,0.3);
+  border-radius: 50px; font-size: 0.75rem; font-weight: 600;
+  color: var(--accent-light); letter-spacing: 0.12em; text-transform: uppercase;
+  background: rgba(99,102,241,0.06); margin-bottom: 2rem;
+  backdrop-filter: blur(8px);
+}
+.hero-badge-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--accent-light);
+  animation: pulse-dot 2s infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(129,140,248,0.5); }
+  50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(129,140,248,0); }
+}
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.75rem, 6.5vw, 5rem);
+  font-weight: 700; line-height: 1.1; margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+}
+.hero h1 .gradient-text {
+  background: linear-gradient(135deg, var(--accent-light) 0%, var(--teal) 50%, var(--accent-light) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+.hero-sub {
+  font-size: 1.15rem; color: var(--text-secondary);
+  max-width: 620px; margin: 0 auto 3rem; line-height: 1.85;
+}
+.hero-author {
+  font-size: 0.9rem; color: var(--text-muted); margin-bottom: 3rem;
+  font-weight: 500;
+}
+.hero-author span { color: var(--text-primary); font-weight: 600; }
+
+/* Hero Stats Row */
+.hero-stats {
+  display: flex; justify-content: center; gap: 2rem;
+  padding: 2rem 0; flex-wrap: wrap;
+}
+.hero-stat {
+  text-align: center; padding: 1.25rem 1.5rem;
+  background: rgba(20, 27, 45, 0.6); border: 1px solid var(--border);
+  border-radius: var(--radius-md); backdrop-filter: blur(12px);
+  min-width: 140px; transition: all 0.3s;
+}
+.hero-stat:hover {
+  border-color: var(--accent); transform: translateY(-2px);
+  box-shadow: 0 8px 30px var(--accent-glow);
+}
+.hero-stat-number {
+  font-size: 2.25rem; font-weight: 800;
+  background: linear-gradient(135deg, var(--accent-light), var(--teal));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; display: block; line-height: 1.1;
+}
+.hero-stat-label {
+  font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;
+  letter-spacing: 0.1em; margin-top: 0.4rem;
+}
+.scroll-cue {
+  position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 0.75rem;
+  color: var(--text-dim); font-size: 0.65rem; letter-spacing: 0.2em;
+  text-transform: uppercase; animation: bob 2.5s ease-in-out infinite;
+}
+@keyframes bob {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(10px); }
+}
+.scroll-line { width: 1px; height: 32px; background: linear-gradient(to bottom, var(--text-dim), transparent); }
+
+/* ═══════════════════════════════════════════
+   GLOBAL SECTION STYLES
+   ═══════════════════════════════════════════ */
+.section-wrap { max-width: 1200px; margin: 0 auto; padding: 7rem 2rem; }
+.full-bleed { width: 100%; background: var(--bg-primary); }
+.section-label {
+  font-size: 0.7rem; font-weight: 700; color: var(--accent);
+  letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 0.75rem;
+  display: flex; align-items: center; gap: 0.75rem;
+}
+.section-label::before {
+  content: ''; width: 24px; height: 1px; background: var(--accent);
+}
+.section-title {
+  font-family: 'Playfair Display', serif; font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: 700; margin-bottom: 1rem; line-height: 1.2; letter-spacing: -0.01em;
+}
+.section-desc {
+  color: var(--text-secondary); max-width: 680px; font-size: 1.05rem;
+  line-height: 1.85; margin-bottom: 3.5rem;
+}
+
+/* Scroll Reveal */
+.reveal {
+  opacity: 0; transform: translateY(40px);
+  transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* Divider */
+.section-divider {
+  width: 100%; max-width: 1200px; margin: 0 auto;
+  height: 1px; background: linear-gradient(90deg, transparent, var(--border-hover), transparent);
+}
+
+/* ═══════════════════════════════════════════
+   NARRATIVE OPENER  "THE CALL"
+   ═══════════════════════════════════════════ */
+.narrative-opener {
+  padding: 6rem 2rem;
+  background: linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-primary) 100%);
+}
+.narrative-inner {
+  max-width: 720px; margin: 0 auto; text-align: center;
+}
+.narrative-inner .quote {
+  font-family: 'Playfair Display', serif; font-size: clamp(1.25rem, 3vw, 1.65rem);
+  font-style: italic; color: var(--text-primary); line-height: 1.8;
+  position: relative; padding: 0 2rem;
+}
+.narrative-inner .quote::before {
+  content: '\201C'; position: absolute; top: -0.5rem; left: -0.5rem;
+  font-size: 4rem; color: var(--accent); opacity: 0.3;
+  font-family: 'Playfair Display', serif;
+}
+.narrative-source {
+  margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-muted);
+}
+
+/* ═══════════════════════════════════════════
+   DATA AT A GLANCE  INFOGRAPHIC ROW
+   ═══════════════════════════════════════════ */
+.glance-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;
+}
+.glance-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 2rem 1.5rem;
+  text-align: center; position: relative; overflow: hidden;
+  transition: all 0.4s;
+}
+.glance-card::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+  height: 3px; transition: height 0.3s;
+}
+.glance-card:hover { transform: translateY(-4px); border-color: var(--border-hover); }
+.glance-card:hover::after { height: 4px; }
+.glance-card:nth-child(1)::after { background: var(--accent); }
+.glance-card:nth-child(2)::after { background: var(--teal); }
+.glance-card:nth-child(3)::after { background: var(--amber); }
+.glance-card:nth-child(4)::after { background: var(--rose); }
+.glance-icon {
+  width: 48px; height: 48px; border-radius: 14px; display: flex;
+  align-items: center; justify-content: center; margin: 0 auto 1rem;
+  font-size: 1.25rem;
+}
+.glance-value {
+  font-size: 2rem; font-weight: 800; line-height: 1; margin-bottom: 0.4rem;
+}
+.glance-label {
+  font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;
+}
+
+/* ═══════════════════════════════════════════
+   RESEARCH QUESTIONS  NUMBERED CARDS
+   ═══════════════════════════════════════════ */
+.rq-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+.rq-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 2.25rem;
+  position: relative; overflow: hidden; transition: all 0.4s;
+}
+.rq-card:hover {
+  border-color: var(--accent); transform: translateY(-4px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+}
+.rq-card::before {
+  content: ''; position: absolute; top: 0; left: 0; width: 3px;
+  height: 0; background: var(--accent); transition: height 0.4s;
+}
+.rq-card:hover::before { height: 100%; }
+.rq-num {
+  font-size: 3.5rem; font-weight: 900; line-height: 1;
+  background: linear-gradient(135deg, var(--accent), transparent);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; opacity: 0.2; margin-bottom: 0.75rem;
+}
+.rq-card h3 {
+  font-size: 1.05rem; font-weight: 700; margin-bottom: 0.6rem;
+  letter-spacing: -0.01em;
+}
+.rq-card p { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.75; }
+
+/* ═══════════════════════════════════════════
+   METHODOLOGY  VISUAL PIPELINE
+   ═══════════════════════════════════════════ */
+.pipeline {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 0;
+  position: relative;
+}
+.pipeline::before {
+  content: ''; position: absolute; top: 44px; left: 10%; right: 10%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--teal), var(--amber), var(--rose), var(--emerald));
+  /* accessible palette: indigo → teal → coral → purple → sky blue */
+}
+.pipe-step {
+  text-align: center; padding: 0 0.75rem; position: relative;
+}
+.pipe-dot {
+  width: 24px; height: 24px; border-radius: 50%; margin: 0 auto 1.25rem;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; z-index: 2; font-size: 0.65rem; font-weight: 800; color: white;
+  box-shadow: 0 0 0 6px var(--bg-primary);
+}
+.pipe-step:nth-child(1) .pipe-dot { background: var(--accent); }
+.pipe-step:nth-child(2) .pipe-dot { background: var(--teal); }
+.pipe-step:nth-child(3) .pipe-dot { background: var(--amber); }
+.pipe-step:nth-child(4) .pipe-dot { background: var(--rose); }
+.pipe-step:nth-child(5) .pipe-dot { background: var(--emerald); }
+.pipe-step h4 {
+  font-size: 0.85rem; font-weight: 700; margin-bottom: 0.5rem;
+}
+.pipe-step p {
+  font-size: 0.78rem; color: var(--text-muted); line-height: 1.6;
+}
+.pipe-tag {
+  display: inline-block; padding: 0.2rem 0.6rem; border-radius: 50px;
+  font-size: 0.65rem; font-weight: 600; margin-top: 0.5rem;
+  background: var(--accent-soft); color: var(--accent-light);
+}
+
+/* ═══════════════════════════════════════════
+   SCROLLY STORY  FINDINGS AS NARRATIVE
+   ═══════════════════════════════════════════ */
+.story-section { padding: 4rem 2rem; }
+.story-inner { max-width: 1200px; margin: 0 auto; }
+
+.story-block {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
+  align-items: center; margin-bottom: 6rem; min-height: 50vh;
+}
+.story-block.reverse { direction: rtl; }
+.story-block.reverse > * { direction: ltr; }
+
+.story-text {}
+.story-chapter {
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.15em; margin-bottom: 0.75rem; display: flex;
+  align-items: center; gap: 0.5rem;
+}
+.story-chapter .ch-dot { width: 8px; height: 8px; border-radius: 50%; }
+.story-text h2 {
+  font-family: 'Playfair Display', serif; font-size: 1.85rem;
+  font-weight: 700; line-height: 1.25; margin-bottom: 1.25rem;
+  letter-spacing: -0.01em;
+}
+.story-text p {
+  color: var(--text-secondary); font-size: 0.95rem; line-height: 1.85;
+  margin-bottom: 1rem;
+}
+.story-text .highlight-stat {
+  display: inline-block; padding: 0.15rem 0.6rem; border-radius: 4px;
+  font-weight: 700; font-size: 0.95rem;
+}
+.hl-accent { background: var(--accent-soft); color: var(--accent-light); }
+.hl-teal { background: var(--teal-soft); color: var(--teal-light); }
+.hl-rose { background: var(--rose-soft); color: var(--rose); }
+.hl-amber { background: var(--amber-soft); color: var(--amber); }
+
+.story-visual {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-xl); padding: 2rem; position: relative;
+  overflow: hidden;
+}
+.story-visual canvas { width: 100% !important; }
+.chart-wrap { position: relative; height: 320px; }
+.chart-wrap-tall { position: relative; height: 380px; }
+.radar-wrap { position: relative; width: 100%; max-width: 640px; height: 560px; margin: 0 auto; }
+@media (max-width: 720px) {
+  .radar-wrap { height: 440px; }
+}
+@media (max-width: 520px) {
+  .radar-wrap { height: 360px; }
+}
+
+/* Paper figure replacement panels — native dark-theme charts */
+.paper-chart-panel {
+  margin: 1.25rem 0 0.25rem;
+  background: linear-gradient(180deg, rgba(15, 22, 41, 0.6), rgba(15, 22, 41, 0.3));
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem 1.5rem 1.25rem;
+}
+.panel-subtitle {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 0.65rem;
+}
+.panel-caption {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  text-align: center;
+  margin-top: 1rem;
+  font-style: italic;
+  line-height: 1.55;
+}
+.mini-chart-wrap { position: relative; height: 180px; width: 100%; }
+.mid-chart-wrap { position: relative; height: 280px; width: 100%; }
+.tall-chart-wrap { position: relative; height: 460px; width: 100%; }
+.dual-chart-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.75rem;
+}
+@media (max-width: 860px) {
+  .dual-chart-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  .tall-chart-wrap { height: 420px; }
+}
+
+/* ═══════════════════════════════════════════
+   ENCOUNTER TYPOLOGY VISUAL
+   ═══════════════════════════════════════════ */
+.typology-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem;
+}
+.typo-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 1.75rem; text-align: center;
+  transition: all 0.4s; position: relative; overflow: hidden;
+}
+.typo-card:hover { transform: translateY(-6px); }
+.typo-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.typo-card:nth-child(1) { border-color: rgba(99,102,241,0.2); }
+.typo-card:nth-child(1):hover { border-color: var(--accent); box-shadow: 0 12px 40px var(--accent-glow); }
+.typo-card:nth-child(1)::before { background: var(--accent); }
+.typo-card:nth-child(2) { border-color: rgba(20,184,166,0.2); }
+.typo-card:nth-child(2):hover { border-color: var(--teal); box-shadow: 0 12px 40px rgba(20,184,166,0.2); }
+.typo-card:nth-child(2)::before { background: var(--teal); }
+.typo-card:nth-child(3) { border-color: rgba(251,146,60,0.2); }
+.typo-card:nth-child(3):hover { border-color: var(--amber); box-shadow: 0 12px 40px rgba(251,146,60,0.2); }
+.typo-card:nth-child(3)::before { background: var(--amber); }
+.typo-card:nth-child(4) { border-color: rgba(167,139,250,0.2); }
+.typo-card:nth-child(4):hover { border-color: var(--rose); box-shadow: 0 12px 40px rgba(167,139,250,0.2); }
+.typo-card:nth-child(4)::before { background: var(--rose); }
+
+.typo-name { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.25rem; }
+.typo-n { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1rem; }
+.typo-metric { margin-bottom: 0.75rem; }
+.typo-metric-label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+.typo-metric-value { font-size: 1.6rem; font-weight: 800; line-height: 1.2; }
+.typo-bar {
+  height: 6px; border-radius: 3px; background: var(--bg-deep); margin-top: 0.25rem;
+  overflow: hidden;
+}
+.typo-bar-fill {
+  height: 100%; border-radius: 3px; transition: width 1s ease;
+}
+.typo-desc {
+  font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; margin-top: 1rem;
+  text-align: left;
+}
+
+/* ═══════════════════════════════════════════
+   INTERACTIVE SIMULATOR
+   ═══════════════════════════════════════════ */
+.simulator-wrap {
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  border-radius: var(--radius-xl); padding: 3rem; margin-top: 3rem;
+  position: relative; overflow: hidden;
+}
+.simulator-wrap::before {
+  content: ''; position: absolute; top: -50%; right: -20%; width: 400px; height: 400px;
+  background: radial-gradient(circle, var(--accent-soft) 0%, transparent 70%);
+  pointer-events: none;
+}
+.sim-header { position: relative; z-index: 1; margin-bottom: 2rem; }
+.sim-header h3 { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.4rem; }
+.sim-header p { color: var(--text-secondary); font-size: 0.9rem; max-width: 600px; }
+
+.sim-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; position: relative; z-index: 1; }
+
+.sim-form { display: flex; flex-direction: column; gap: 1.25rem; }
+.form-group label {
+  display: block; font-size: 0.75rem; font-weight: 600;
+  color: var(--text-muted); text-transform: uppercase;
+  letter-spacing: 0.06em; margin-bottom: 0.4rem;
+}
+.form-group select, .form-group input {
+  width: 100%; padding: 0.7rem 1rem;
+  background: var(--bg-deep); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); color: var(--text-primary);
+  font-size: 0.875rem; font-family: 'Inter', sans-serif;
+  transition: all 0.3s; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center;
+}
+.form-group select:focus, .form-group input:focus {
+  outline: none; border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+.form-group select option { background: var(--bg-deep); }
+
+.checkbox-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+.cb-label {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.82rem; color: var(--text-secondary); cursor: pointer;
+  padding: 0.35rem 0.5rem; border-radius: 6px; transition: background 0.2s;
+}
+.cb-label:hover { background: var(--accent-soft); }
+.cb-label input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--accent); }
+
+.predict-btn {
+  padding: 0.85rem 2rem; border: none; border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--accent), #4f46e5);
+  color: white; font-size: 0.9rem; font-weight: 600; cursor: pointer;
+  font-family: 'Inter', sans-serif; transition: all 0.3s; margin-top: 0.5rem;
+  box-shadow: 0 4px 15px var(--accent-glow);
+}
+.predict-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px var(--accent-glow);
+}
+
+.sim-results {
+  background: var(--bg-card); border-radius: var(--radius-lg);
+  padding: 2rem; display: flex; flex-direction: column; justify-content: center;
+  min-height: 360px;
+}
+.result-placeholder {
+  text-align: center; color: var(--text-dim); padding: 2rem 1rem;
+}
+.result-placeholder svg { width: 56px; height: 56px; margin-bottom: 1rem; opacity: 0.25; }
+.result-placeholder p { font-size: 0.85rem; }
+
+.result-output { display: none; }
+.result-output.show { display: block; animation: fadeSlideUp 0.5s ease; }
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.risk-gauge { text-align: center; margin-bottom: 1.5rem; }
+.risk-gauge-label {
+  font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--text-muted); margin-bottom: 1rem;
+}
+.risk-ring {
+  width: 130px; height: 130px; border-radius: 50%; margin: 0 auto;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; position: relative;
+  background: var(--bg-deep);
+}
+.risk-ring::before {
+  content: ''; position: absolute; inset: -3px; border-radius: 50%;
+  background: conic-gradient(var(--accent), var(--teal), var(--accent));
+  animation: spin 5s linear infinite; z-index: 0;
+}
+.risk-ring::after {
+  content: ''; position: absolute; inset: 3px; border-radius: 50%;
+  background: var(--bg-deep); z-index: 1;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.risk-ring > * { position: relative; z-index: 2; }
+.risk-pct { font-size: 2.25rem; font-weight: 800; line-height: 1; }
+.risk-label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+.factor-list { margin-top: 1rem; }
+.factor-list h4 {
+  font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;
+  letter-spacing: 0.06em; margin-bottom: 0.75rem;
+}
+.factor-row {
+  display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.6rem;
+}
+.factor-name { font-size: 0.78rem; color: var(--text-secondary); width: 110px; flex-shrink: 0; }
+.factor-track { flex: 1; height: 6px; background: var(--bg-deep); border-radius: 3px; overflow: hidden; }
+.factor-fill { height: 100%; border-radius: 3px; transition: width 0.8s ease; }
+.factor-fill.up { background: linear-gradient(90deg, var(--rose), #c4b5fd); }
+.factor-fill.down { background: linear-gradient(90deg, var(--emerald), #7dd3fc); }
+.factor-val { font-size: 0.72rem; font-weight: 700; width: 45px; text-align: right; }
+
+.cluster-box {
+  margin-top: 1.25rem; padding: 1rem 1.25rem;
+  background: var(--bg-deep); border-radius: var(--radius-sm);
+  border-left: 3px solid var(--accent);
+}
+.cluster-box h4 { font-size: 0.82rem; font-weight: 700; margin-bottom: 0.25rem; }
+.cluster-box p { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.6; }
+
+/* ═══════════════════════════════════════════
+   POLICY CARDS
+   ═══════════════════════════════════════════ */
+.policy-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.5rem;
+}
+.policy-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 2rem; transition: all 0.4s;
+  position: relative; overflow: hidden;
+}
+.policy-card:hover { border-color: var(--teal); transform: translateY(-4px); }
+.policy-num {
+  font-size: 0.65rem; font-weight: 800; color: var(--teal);
+  text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.75rem;
+}
+.policy-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.75rem; }
+.policy-card p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.75; }
+
+/* ═══════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════ */
+footer {
+  border-top: 1px solid var(--border); padding: 3rem 2rem; text-align: center;
+  background: var(--bg-deep);
+}
+.footer-inner { max-width: 1200px; margin: 0 auto; }
+footer .footer-name {
+  font-family: 'Playfair Display', serif; font-size: 1.15rem;
+  font-weight: 700; margin-bottom: 0.5rem;
+}
+footer p { color: var(--text-muted); font-size: 0.82rem; }
+footer a { color: var(--accent-light); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+/* ═══════════════════════════════════════════
+   HERO ACTION BUTTONS
+   ═══════════════════════════════════════════ */
+.hero-actions {
+  display: flex; gap: 0.85rem; justify-content: center;
+  margin-top: 2.25rem; flex-wrap: wrap;
+}
+.hero-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.85rem 1.5rem; border-radius: 999px;
+  font-size: 0.8rem; font-weight: 600; letter-spacing: 0.02em;
+  text-decoration: none; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid transparent;
+}
+.hero-btn-primary {
+  background: linear-gradient(135deg, var(--accent), var(--teal));
+  color: white;
+  box-shadow: 0 8px 32px var(--accent-glow);
+}
+.hero-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px var(--accent-glow); }
+.hero-btn-ghost {
+  background: rgba(255,255,255,0.03);
+  color: var(--text-primary);
+  border-color: var(--border-hover);
+  backdrop-filter: blur(8px);
+}
+.hero-btn-ghost:hover { background: rgba(255,255,255,0.06); border-color: var(--accent-light); }
+.hero-btn svg { width: 14px; height: 14px; }
+
+/* ═══════════════════════════════════════════
+   TL;DR RIBBON
+   ═══════════════════════════════════════════ */
+.tldr-wrap {
+  max-width: 1100px; margin: 0 auto; padding: 5rem 2rem 1rem;
+}
+.tldr-card {
+  background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(20,184,166,0.04));
+  border: 1px solid var(--border-hover);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem 3rem;
+  position: relative; overflow: hidden;
+}
+.tldr-card::before {
+  content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+  background: linear-gradient(180deg, var(--accent), var(--teal));
+}
+.tldr-label {
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--accent-light); margin-bottom: 0.75rem;
+}
+.tldr-card h3 {
+  font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 600;
+  margin-bottom: 1rem; letter-spacing: -0.02em;
+}
+.tldr-card p {
+  font-size: 1.02rem; color: var(--text-secondary); line-height: 1.8;
+  max-width: 800px;
+}
+.tldr-highlights {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;
+  margin-top: 2rem; padding-top: 1.75rem;
+  border-top: 1px solid var(--border);
+}
+.tldr-point strong {
+  display: block; font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--teal-light); margin-bottom: 0.5rem;
+}
+.tldr-point span {
+  display: block; font-size: 0.9rem; color: var(--text-primary); line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════════
+   TECH STACK
+   ═══════════════════════════════════════════ */
+.stack-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem; margin-top: 2.5rem;
+}
+.stack-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 1.5rem;
+  transition: all 0.3s;
+}
+.stack-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+.stack-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 0.85rem; font-size: 1.1rem;
+}
+.stack-title {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem;
+}
+.stack-items {
+  display: flex; flex-wrap: wrap; gap: 0.4rem;
+}
+.stack-tag {
+  background: var(--bg-elevated); color: var(--text-primary);
+  font-size: 0.72rem; font-weight: 500;
+  padding: 0.35rem 0.7rem; border-radius: 6px;
+  border: 1px solid var(--border);
+}
+
+/* ═══════════════════════════════════════════
+   IMPACT METRICS
+   ═══════════════════════════════════════════ */
+.impact-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem; margin-top: 2.5rem;
+}
+.impact-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  position: relative; overflow: hidden;
+  transition: all 0.4s;
+}
+.impact-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--teal));
+  opacity: 0.6;
+}
+.impact-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+.impact-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.6rem; font-weight: 700; line-height: 1;
+  background: linear-gradient(135deg, var(--accent-light), var(--teal-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.75rem;
+}
+.impact-title {
+  font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem;
+}
+.impact-desc {
+  font-size: 0.82rem; color: var(--text-secondary); line-height: 1.7;
+}
+
+/* ═══════════════════════════════════════════
+   CIT ACADEMY EVALUATION (Training)
+   ═══════════════════════════════════════════ */
+.training-section { background: var(--bg-deep); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 5rem 0; }
+.training-layout { display: grid; grid-template-columns: 1.1fr 1fr; gap: 2.25rem; margin-top: 2.5rem; align-items: stretch; }
+.training-chart-card, .training-side-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-xl); padding: 2rem 2.25rem;
+}
+.training-chart-card h4, .training-side-card h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.35rem; font-weight: 600; margin-bottom: 0.65rem;
+  color: var(--text-primary); letter-spacing: -0.01em;
+}
+.training-chart-card .training-sub, .training-side-card .training-sub {
+  font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1.25rem;
+}
+.training-chart-wrap { height: 320px; position: relative; }
+.training-stat-row {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+  margin-top: 1.5rem; padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+.training-stat { text-align: center; }
+.training-stat-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem; font-weight: 700;
+  color: var(--accent-light); line-height: 1;
+}
+.training-stat-label {
+  font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--text-muted); margin-top: 0.35rem;
+}
+.training-ksa-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 0.78rem;
+}
+.training-ksa-table th, .training-ksa-table td {
+  padding: 0.6rem 0.55rem; text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.training-ksa-table th {
+  color: var(--text-muted); font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  font-size: 0.65rem;
+}
+.training-ksa-table td { color: var(--text-secondary); }
+.training-ksa-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.training-ksa-table tr:last-child td { border-bottom: none; }
+.training-ksa-table .ksa-d { color: var(--teal-light); font-weight: 600; }
+.training-narrative { margin-top: 2rem; }
+.training-narrative p {
+  font-size: 0.88rem; line-height: 1.8;
+  color: var(--text-secondary); margin-bottom: 1rem;
+}
+.training-narrative strong { color: var(--text-primary); }
+@media (max-width: 960px) {
+  .training-layout { grid-template-columns: 1fr; }
+  .training-stat-row { grid-template-columns: repeat(2, 1fr); }
+  .map-layout { grid-template-columns: 1fr; }
+  .missoula-map { height: 420px; }
+  .limit-grid { grid-template-columns: 1fr; }
+}
+
+/* ═══════════════════════════════════════════
+   LIMITATIONS
+   ═══════════════════════════════════════════ */
+.limit-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.25rem; margin-top: 2.5rem;
+}
+.limit-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--amber);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem 1.65rem;
+  transition: all 0.3s;
+}
+.limit-card:hover { border-color: var(--amber); transform: translateY(-2px); }
+.limit-card h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem; font-weight: 600;
+  color: var(--text-primary); margin-bottom: 0.5rem;
+  letter-spacing: -0.005em;
+}
+.limit-card p {
+  font-size: 0.8rem; line-height: 1.7;
+  color: var(--text-secondary); margin: 0;
+}
+
+/* ═══════════════════════════════════════════
+   ABOUT THE ANALYST
+   ═══════════════════════════════════════════ */
+.about-wrap {
+  display: grid; grid-template-columns: 1fr 1.6fr; gap: 3rem;
+  align-items: start; margin-top: 2rem;
+}
+.about-avatar {
+  width: 100%; aspect-ratio: 1;
+  border-radius: var(--radius-xl);
+  background: linear-gradient(135deg, var(--accent-soft), var(--teal-soft));
+  border: 1px solid var(--border-hover);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.about-avatar-initials {
+  font-family: 'Playfair Display', serif;
+  font-size: 5rem; font-weight: 600;
+  background: linear-gradient(135deg, var(--accent-light), var(--teal-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.about-text h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem; font-weight: 600; margin-bottom: 0.5rem;
+}
+.about-role {
+  font-size: 0.78rem; font-weight: 600; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--accent-light); margin-bottom: 1.25rem;
+}
+.about-text p {
+  font-size: 0.95rem; color: var(--text-secondary); line-height: 1.85;
+  margin-bottom: 1rem;
+}
+.about-skills {
+  display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem;
+}
+.about-skill {
+  background: var(--bg-elevated); color: var(--text-primary);
+  font-size: 0.74rem; font-weight: 500;
+  padding: 0.45rem 0.85rem; border-radius: 999px;
+  border: 1px solid var(--border);
+}
+.about-contact {
+  display: flex; gap: 0.75rem; margin-top: 1.75rem; flex-wrap: wrap;
+}
+.about-link {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.7rem 1.25rem; border-radius: 999px;
+  background: var(--bg-elevated); border: 1px solid var(--border);
+  color: var(--text-primary); text-decoration: none;
+  font-size: 0.8rem; font-weight: 500; transition: all 0.3s;
+}
+.about-link:hover { border-color: var(--accent); color: var(--accent-light); }
+.about-link svg { width: 14px; height: 14px; }
+
+/* ═══════════════════════════════════════════
+   PLACE SECTION (Missoula imagery)
+   ═══════════════════════════════════════════ */
+.place-wrap {
+  max-width: 1200px; margin: 4rem auto 0; padding: 0 2rem;
+}
+.place-card {
+  position: relative; border-radius: var(--radius-xl);
+  overflow: hidden; border: 1px solid var(--border-hover);
+  background: var(--bg-card);
+}
+.place-img {
+  display: block; width: 100%; height: auto;
+  max-height: 540px; object-fit: cover;
+  filter: saturate(0.95) contrast(1.05);
+}
+.place-svg {
+  display: block; width: 100%; height: auto; aspect-ratio: 1200/520;
+}
+.place-card-svg { background: var(--bg-deep); }
+.place-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(5,8,22,0) 50%, rgba(5,8,22,0.85) 100%);
+  pointer-events: none;
+}
+.place-caption {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 2rem 2.5rem;
+}
+.place-caption .place-label {
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--teal-light); margin-bottom: 0.5rem;
+}
+.place-caption h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.7rem; font-weight: 600; margin-bottom: 0.4rem; letter-spacing: -0.01em;
+}
+.place-caption p {
+  font-size: 0.88rem; color: var(--text-secondary); max-width: 720px; line-height: 1.7;
+}
+
+/* ═══════════════════════════════════════════
+   INTERACTIVE MAP SECTION
+   ═══════════════════════════════════════════ */
+.map-section {
+  background: var(--bg-deep);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 5rem 0;
+}
+.map-layout {
+  display: grid;
+  grid-template-columns: 1.45fr 1fr;
+  gap: 2.25rem;
+  align-items: stretch;
+}
+.missoula-map {
+  height: 560px;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-hover);
+  overflow: hidden;
+  box-shadow: 0 18px 56px rgba(0,0,0,0.45);
+  background: #0a0e1a;
+}
+.map-side {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 2rem 2.25rem;
+}
+.map-side h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem; font-weight: 600;
+  margin-bottom: 0.85rem; letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+.map-side p {
+  font-size: 0.86rem; line-height: 1.75;
+  color: var(--text-secondary); margin-bottom: 0.9rem;
+}
+.map-side p strong { color: var(--accent-light); font-weight: 600; }
+.map-legend {
+  margin-top: 1.25rem; padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 0.55rem;
+}
+.legend-item {
+  display: flex; align-items: center; gap: 0.65rem;
+  font-size: 0.78rem; color: var(--text-muted);
+}
+.legend-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  box-shadow: 0 0 12px currentColor;
+}
+/* Leaflet popup override to match dark theme */
+.leaflet-popup-content-wrapper {
+  background: rgba(15, 22, 41, 0.97) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-hover) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 14px 40px rgba(0,0,0,0.6) !important;
+}
+.leaflet-popup-tip {
+  background: rgba(15, 22, 41, 0.97) !important;
+  border: 1px solid var(--border-hover) !important;
+}
+.leaflet-popup-content {
+  margin: 0.9rem 1.1rem !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 0.78rem !important; line-height: 1.55 !important;
+}
+.leaflet-popup-content h5 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem; font-weight: 600; margin: 0 0 0.4rem;
+  color: var(--text-primary);
+}
+.leaflet-popup-content .pop-row {
+  display: flex; justify-content: space-between;
+  padding: 0.2rem 0;
+  border-bottom: 1px dashed rgba(148, 163, 184, 0.15);
+}
+.leaflet-popup-content .pop-row:last-child { border-bottom: none; }
+.leaflet-popup-content .pop-label { color: var(--text-muted); }
+.leaflet-popup-content .pop-val { color: var(--accent-light); font-weight: 600; }
+.leaflet-popup-content .pop-note { margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(148,163,184,0.15); font-size: 0.72rem; color: var(--text-secondary); font-style: italic; line-height: 1.5; }
+.leaflet-container a.leaflet-popup-close-button {
+  color: var(--text-muted) !important;
+}
+.leaflet-control-attribution {
+  background: rgba(5, 8, 22, 0.75) !important;
+  color: var(--text-muted) !important;
+  font-size: 0.65rem !important;
+}
+.leaflet-control-attribution a { color: var(--teal-light) !important; }
+.leaflet-bar a {
+  background: rgba(15, 22, 41, 0.95) !important;
+  color: var(--text-primary) !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+.leaflet-bar a:hover { background: var(--bg-card) !important; }
+
+/* Inline figure blocks (white background for paper figures) */
+.figure-wrap {
+  background: #ffffff; border: 1px solid var(--border);
+  border-radius: var(--radius-xl); padding: 1.5rem;
+  margin-top: 2.5rem;
+}
+.figure-img {
+  display: block; width: 100%; height: auto; border-radius: var(--radius-md);
+}
+.figure-caption {
+  font-size: 0.78rem; color: #64748b; margin-top: 0.9rem; text-align: center; line-height: 1.6;
+  font-style: italic;
+}
+
+/* CIT Logo in footer */
+.footer-logo {
+  height: 44px; width: auto; margin: 0 auto 1.25rem;
+  opacity: 0.9; display: block;
+  filter: brightness(1.1);
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .hero-stats { gap: 1rem; }
+  .hero-stat { min-width: 110px; padding: 1rem; }
+  .glance-grid { grid-template-columns: repeat(2, 1fr); }
+  .rq-grid { grid-template-columns: 1fr; }
+  .pipeline { grid-template-columns: 1fr; gap: 2rem; }
+  .pipeline::before { display: none; }
+  .story-block, .story-block.reverse { grid-template-columns: 1fr; gap: 2rem; }
+  .story-block.reverse { direction: ltr; }
+  .typology-grid { grid-template-columns: repeat(2, 1fr); }
+  .sim-grid { grid-template-columns: 1fr; }
+  .section-wrap { padding: 4rem 1.25rem; }
+}
+@media (max-width: 900px) {
+  .tldr-wrap { padding: 4rem 1.25rem 1rem; }
+  .tldr-card { padding: 2rem 1.5rem; }
+  .tldr-highlights { grid-template-columns: 1fr; gap: 1rem; }
+  .about-wrap { grid-template-columns: 1fr; gap: 2rem; }
+  .about-avatar { max-width: 240px; margin: 0 auto; }
+  .place-wrap { padding: 0 1.25rem; }
+  .place-caption { padding: 1.25rem 1.5rem; }
+  .place-caption h4 { font-size: 1.2rem; }
+}
+@media (max-width: 600px) {
+  .glance-grid { grid-template-columns: 1fr; }
+  .typology-grid { grid-template-columns: 1fr; }
+  .hero-stats { flex-direction: column; align-items: center; }
+  .tldr-card h3 { font-size: 1.4rem; }
+  .hero-actions { gap: 0.5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAVIGATION ═══ -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">Michelle Calderwood</a>
+    <ul class="nav-links">
+      <li><a href="#context">Data</a></li>
+      <li><a href="#findings">Findings</a></li>
+      <li><a href="#typology">Typology</a></li>
+      <li><a href="#simulator">Simulator</a></li>
+      <li><a href="#training">Training</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-bg"></div>
+  <div class="hero-particles" id="particles"></div>
+  <div class="hero-content">
+    <div class="hero-badge"><span class="hero-badge-dot"></span> MSBA Capstone &middot; University of Montana &middot; 2026</div>
+    <h1>From Paper to<br><span class="gradient-text">Prediction</span></h1>
+    <p class="hero-sub">An encounter-level analysis of 861 Missoula crisis calls documented through the Mental Health Referral Form. The study uses logistic regression, Cox proportional hazards survival models, and K-modes clustering to examine what drives in-the-moment severity, what predicts who returns to the system, and how the two outcomes relate.</p>
+    <p class="hero-author">by <span>Michelle Calderwood</span></p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-number" data-target="861">0</span>
+        <span class="hero-stat-label">Crisis Encounters</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-number" data-target="14" data-suffix=" mo">0</span>
+        <span class="hero-stat-label">Data Collection</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-number" data-target="4">0</span>
+        <span class="hero-stat-label">Typologies Found</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-number" data-target="5">0</span>
+        <span class="hero-stat-label">Policy Recommendations</span>
+      </div>
+    </div>
+    <div class="hero-actions">
+      <a href="#tldr" class="hero-btn hero-btn-primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        Explore the Findings
+      </a>
+      <a href="#about" class="hero-btn hero-btn-ghost">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        About the Analyst
+      </a>
+      <a href="mailto:ma.michelle@outlook.com" class="hero-btn hero-btn-ghost">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Contact
+      </a>
+    </div>
+  </div>
+  <div class="scroll-cue">Scroll<div class="scroll-line"></div></div>
+</section>
+
+<!-- ═══ NARRATIVE OPENER ═══ -->
+<div class="narrative-opener reveal">
+  <div class="narrative-inner">
+    <p class="quote">When a crisis call comes in to Missoula 911, a cascade of decisions gets made very fast: whether to route the call to the Mobile Support Team (MST), to MPD or MCSO, or to both agencies as a co-response, and whether that encounter ends in a voluntary handoff, an involuntary hold, use of force, or injury. Missoula began documenting those decisions in March 2024 through the Mental Health Referral Form (MHRF), creating one of the most granular encounter-level datasets of its kind.</p>
+    <p class="narrative-source">This study uses the first 14 months of that data, 861 encounters involving 609 unique individuals, to examine the internal mechanics of how crisis encounters unfold and what drives their outcomes.</p>
+  </div>
+</div>
+
+<!-- ═══ INTERACTIVE MAP (Missoula crisis hotspots) ═══ -->
+<section id="map" class="map-section">
+  <div class="section-wrap">
+    <div class="reveal" style="text-align:center; margin-bottom:2rem;">
+      <div class="section-label">Geographic Distribution</div>
+      <div class="section-title">Where the Calls Happen</div>
+      <div class="section-desc">Of the 861 total encounters, 810 (94.1%) include address information spanning 651 unique locations. After geocoding and quality filtering, 591 encounters were successfully mapped. Click each hotspot to see its volume, severity rate, and repeat contact rate.</div>
+    </div>
+
+    <div class="map-layout reveal">
+      <div id="missoula-map" class="missoula-map"></div>
+      <div class="map-side">
+        <h4>What the map shows</h4>
+        <p>The <strong>Broadway Corridor</strong> is the highest-activity area (12.1% of addressed encounters), followed by North Avenue (5.7%) and the Downtown Grid (3.0%). The urban core accounts for 20.9% of all addressed encounters.</p>
+        <p>Geography does not determine outcomes: Broadway shows lower severity (29.6%) but the highest repeat rate (35.8%), while South 3rd Street shows the reverse (52.9% severity, 6.2% repeat). Severity and recurrence are driven by individual factors, not spatial clusters. Click hotspots for details.</p>
+        <div class="map-legend">
+          <div class="legend-item"><span class="legend-dot" style="background:#a78bfa;"></span> High volume / high repeat</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#fb923c;"></span> Elevated severity</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#14b8a6;"></span> Lower intensity</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TL;DR EXECUTIVE SUMMARY ═══ -->
+<div class="tldr-wrap" id="tldr">
+  <div class="tldr-card reveal">
+    <div class="tldr-label">Executive Summary</div>
+    <h3>Encounter severity is predictable. Repeat contact is not.</h3>
+    <p>This study analyzed 861 crisis encounters documented through Missoula's Mental Health Referral Form between March 2024 and May 2025, representing 609 unique individuals. The analysis set out to answer four questions: what behavioral and situational features predict whether an encounter becomes severe, whether encounter-level information can predict who returns to the crisis system, how dispatch routes calls across response models, and whether encounters group into distinct typologies. The results show that severity is predictable from features observable at the scene (test AUC = 0.719), that repeat contact is not (Cox test C-index = 0.461), and that the cluster with the lowest severity rate generates the largest share of repeat encounters.</p>
+    <div class="tldr-highlights">
+      <div class="tldr-point">
+        <strong>Data</strong>
+        <span>861 MHRF encounters across 14 months, covering 609 unique individuals, with structured fields for behavioral indicators, call type, responding agency, commitment criteria, force, and injury outcomes.</span>
+      </div>
+      <div class="tldr-point">
+        <strong>Methods</strong>
+        <span>L2-regularized logistic regression and PCA for severity, Cox proportional hazards and Kaplan-Meier for time to return, K-modes clustering on 10 presentation features, and chi-square tests for response model triage.</span>
+      </div>
+      <div class="tldr-point">
+        <strong>Deliverables</strong>
+        <span>A four-component severity index, a working severity prediction model, four encounter typologies, and five evidence-based recommendations for the Missoula crisis response system.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DATA AT A GLANCE ═══ -->
+<section id="context" class="full-bleed">
+  <div class="section-wrap">
+    <div class="reveal">
+      <div class="section-label">The Dataset</div>
+      <div class="section-title">Data at a Glance</div>
+      <div class="section-desc">861 crisis encounters documented through Missoula's Mental Health Referral Form (MHRF), collected between March 2024 and May 2025, representing interactions with 609 unique individuals. Follow-up observation extends through February 2026 for survival analysis.</div>
+    </div>
+    <div class="glance-grid">
+      <div class="glance-card reveal reveal-delay-1">
+        <div class="glance-icon" style="background:var(--accent-soft); color:var(--accent-light);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div class="glance-value" style="color:var(--accent-light);">861</div>
+        <div class="glance-label">Total crisis encounters analyzed over 14 months</div>
+      </div>
+      <div class="glance-card reveal reveal-delay-2">
+        <div class="glance-icon" style="background:var(--teal-soft); color:var(--teal-light);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <div class="glance-value" style="color:var(--teal-light);">40.4%</div>
+        <div class="glance-label">Overall severity rate across all encounters</div>
+      </div>
+      <div class="glance-card reveal reveal-delay-3">
+        <div class="glance-icon" style="background:var(--amber-soft); color:var(--amber);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        </div>
+        <div class="glance-value" style="color:var(--amber);">25.2%</div>
+        <div class="glance-label">Encounter-level repeat rate (n=814 with person IDs)</div>
+      </div>
+      <div class="glance-card reveal reveal-delay-4">
+        <div class="glance-icon" style="background:var(--rose-soft); color:var(--rose);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <div class="glance-value" style="color:var(--rose);">28.3%</div>
+        <div class="glance-label">Unhoused individuals (n=244) with highest repeat rate (33.6%)</div>
+      </div>
+    </div>
+
+    <!-- Descriptive Distribution Charts -->
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 3rem;">
+      <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); padding:2rem;" class="reveal">
+        <h4 style="font-size:0.9rem; margin-bottom:0.25rem;">Call Type Distribution</h4>
+        <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:1rem;">Volume and severity rate by call category. Severity does not follow volume patterns.</p>
+        <div style="position:relative; height:280px;">
+          <canvas id="chart-calltype-dist"></canvas>
+        </div>
+      </div>
+      <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); padding:2rem;" class="reveal">
+        <h4 style="font-size:0.9rem; margin-bottom:0.25rem;">Response Model Distribution</h4>
+        <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:1rem;">How calls are routed, and the severity gradient from MST to law enforcement.</p>
+        <div style="position:relative; height:280px;">
+          <canvas id="chart-response-dist"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───── DESCRIPTIVE HIGHLIGHTS ───── -->
+    <div class="reveal" style="margin-top: 5rem;">
+      <div class="section-label">Descriptive Highlights</div>
+      <div class="section-title">Key Patterns in the Data</div>
+      <div class="section-desc">Summary-level view of temporal trends, behavioral indicators, housing, and response model distribution across 861 encounters.</div>
+    </div>
+
+    <!-- Encounter Volume and Trend -->
+    <div class="reveal" style="margin-top: 2.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 2.25rem;">
+      <h4 style="font-size: 1.05rem; margin-bottom: 0.5rem; color: var(--text-bright);">Encounter Volume and Trend</h4>
+      <p style="font-size: 0.88rem; line-height: 1.7; color: var(--text); margin-bottom: 0.9rem;">Volume peaked at <span class="highlight-stat hl-teal">63 encounters in December 2024</span> and stabilized in the mid-30s to mid-40s range. Severity and repeat rates showed no sustained trends, supporting cross-sectional analysis.</p>
+      <div class="paper-chart-panel">
+        <div class="panel-subtitle">A. Monthly encounter volume (3-month moving average overlaid)</div>
+        <div class="mini-chart-wrap"><canvas id="chart-temporal-volume"></canvas></div>
+        <div class="panel-subtitle" style="margin-top: 1.25rem;">B. Severity rate (%) with 3-month moving average</div>
+        <div class="mini-chart-wrap"><canvas id="chart-temporal-severity"></canvas></div>
+        <div class="panel-subtitle" style="margin-top: 1.25rem;">C. Repeat contact rate (%) with 3-month moving average</div>
+        <div class="mini-chart-wrap"><canvas id="chart-temporal-repeat"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Age Distribution -->
+    <div class="reveal" style="margin-top: 1.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 2.25rem;">
+      <h4 style="font-size: 1.05rem; margin-bottom: 0.5rem; color: var(--text-bright);">Age Distribution</h4>
+      <p style="font-size: 0.88rem; line-height: 1.7; color: var(--text); margin-bottom: 0.9rem;">Adults ages <span class="highlight-stat hl-teal">18&ndash;39</span> account for the largest share (385 encounters combined). Age was not a significant predictor of severity or repeat contact in the models.</p>
+      <div class="paper-chart-panel">
+        <div class="panel-subtitle">Encounters by age group (young adults 18&ndash;39 highlighted)</div>
+        <div class="mid-chart-wrap"><canvas id="chart-age-dist"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Behavioral Indicators -->
+    <div class="reveal" style="margin-top: 1.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 2.25rem;">
+      <h4 style="font-size: 1.05rem; margin-bottom: 0.5rem; color: var(--text-bright);">Behavioral Indicators</h4>
+      <p style="font-size: 0.88rem; line-height: 1.7; color: var(--text); margin-bottom: 1rem;">At least one indicator is present in <span class="highlight-stat hl-teal">73%</span> of encounters. Depression is the most common (31.6%) but is not a significant severity predictor. <span class="highlight-stat hl-rose">Anger and mania</span> are the strongest predictors despite lower prevalence.</p>
+      <div class="paper-chart-panel">
+        <div class="panel-subtitle">Prevalence of behavioral indicators (% of all 861 encounters)</div>
+        <div class="mid-chart-wrap"><canvas id="chart-behavioral-indicators"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Housing Status -->
+    <div class="reveal" style="margin-top: 1.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 2.25rem;">
+      <h4 style="font-size: 1.05rem; margin-bottom: 0.5rem; color: var(--text-bright);">Housing Status</h4>
+      <p style="font-size: 0.88rem; line-height: 1.7; color: var(--text); margin-bottom: 1rem;">Housed individuals show higher severity (<span class="highlight-stat hl-rose">43.5%</span>) but lower repeat rates. Unhoused individuals show the opposite: lower severity (<span class="highlight-stat hl-teal">29.9%</span>) but the highest repeat rate (<span class="highlight-stat hl-amber">33.6%</span>). Severity and repeat contact move in opposite directions by housing status.</p>
+      <div class="paper-chart-panel">
+        <div class="dual-chart-grid">
+          <div>
+            <div class="panel-subtitle">A. Encounter volume by housing status</div>
+            <div class="mid-chart-wrap"><canvas id="chart-housing-volume"></canvas></div>
+          </div>
+          <div>
+            <div class="panel-subtitle">B. Severity &amp; repeat rates by housing status</div>
+            <div class="mid-chart-wrap"><canvas id="chart-housing-rates"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Call Type Distribution -->
+    <div class="reveal" style="margin-top: 1.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 2.25rem;">
+      <h4 style="font-size: 1.05rem; margin-bottom: 0.5rem; color: var(--text-bright);">Call Type Distribution</h4>
+      <p style="font-size: 0.88rem; line-height: 1.7; color: var(--text); margin-bottom: 1rem;">Severity rates vary dramatically by call type and <strong>do not follow volume patterns</strong>. High-volume suicidal/self-harm calls (38.6%) sit near the overall severity mean, while low-volume disturbance categories reach 78.6%.</p>
+      <div class="paper-chart-panel">
+        <div class="dual-chart-grid">
+          <div>
+            <div class="panel-subtitle">A. Call volume by type (% of all encounters)</div>
+            <div class="tall-chart-wrap"><canvas id="chart-calltype-volume"></canvas></div>
+          </div>
+          <div>
+            <div class="panel-subtitle">B. Severity rate by call type (sorted)</div>
+            <div class="tall-chart-wrap"><canvas id="chart-calltype-severity"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Response Model Distribution -->
+    <div class="reveal" style="margin-top: 1.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 2.25rem;">
+      <h4 style="font-size: 1.05rem; margin-bottom: 0.5rem; color: var(--text-bright);">Response Model Distribution</h4>
+      <p style="font-size: 0.88rem; line-height: 1.7; color: var(--text); margin-bottom: 1rem;">A clear severity gradient runs from MST-only (<span class="highlight-stat hl-teal">4.1%</span>) to co-response (<span class="highlight-stat hl-amber">50.3%</span>) to law enforcement-only (<span class="highlight-stat hl-rose">65.0%</span>), reflecting effective dispatch triage rather than agency-caused differences. MST operates 10 AM&ndash;8 PM only.</p>
+      <div class="paper-chart-panel">
+        <div class="dual-chart-grid">
+          <div>
+            <div class="panel-subtitle">A. Encounter volume by response type</div>
+            <div class="mid-chart-wrap"><canvas id="chart-response-volume"></canvas></div>
+          </div>
+          <div>
+            <div class="panel-subtitle">B. Severity rate by response model</div>
+            <div class="mid-chart-wrap"><canvas id="chart-response-severity"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Outcome Variable Construction -->
+    <div class="reveal" style="margin-top: 1.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 2.25rem;">
+      <h4 style="font-size: 1.05rem; margin-bottom: 0.5rem; color: var(--text-bright);">Outcome Variables</h4>
+      <p style="font-size: 0.88rem; line-height: 1.7; color: var(--text); margin-bottom: 0.9rem;"><strong>Severity Flag</strong> (composite: involuntary + commitment criteria, force, or injury) &mdash; rate: <span class="highlight-stat hl-rose">40.4%</span>. <strong>Repeat Contact Flag</strong> (person with &gt;1 encounter) &mdash; rate: <span class="highlight-stat hl-amber">25.2%</span>, with 1.41 encounters per person on average.</p>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══ RESEARCH QUESTIONS ═══ -->
+<section id="questions">
+  <div class="section-wrap">
+    <div class="reveal">
+      <div class="section-label">Research Questions</div>
+      <div class="section-title">The Four Questions This Study Answers</div>
+      <div class="section-desc">This analysis examines the internal mechanics of how crisis encounters unfold and what drives their outcomes, rather than measuring aggregate program effects.</div>
+    </div>
+    <div class="rq-grid">
+      <div class="rq-card reveal reveal-delay-1">
+        <div class="rq-num">01</div>
+        <h3>Severity Prediction</h3>
+        <p>What behavioral and situational features predict whether a crisis encounter will be severe, defined as involving involuntary intervention with commitment criteria met, use of force, subject injury, or injury to others?</p>
+      </div>
+      <div class="rq-card reveal reveal-delay-2">
+        <div class="rq-num">02</div>
+        <h3>Repeat Encounters</h3>
+        <p>Can encounter-level information predict whether an individual will return to the crisis system, and if so, how quickly?</p>
+      </div>
+      <div class="rq-card reveal reveal-delay-3">
+        <div class="rq-num">03</div>
+        <h3>Dispatch Routing</h3>
+        <p>How does the dispatch system route calls across response models, and does this routing reflect a systematic severity gradient?</p>
+      </div>
+      <div class="rq-card reveal reveal-delay-4">
+        <div class="rq-num">04</div>
+        <h3>Encounter Typology</h3>
+        <p>Do crisis encounters group into distinct typologies, and if so, what do those typologies reveal about the relationship between severity and repeat contact?</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══ METHODOLOGY ═══ -->
+<section id="methods" class="full-bleed">
+  <div class="section-wrap">
+    <div class="reveal">
+      <div class="section-label">Methodology</div>
+      <div class="section-title">Analytical Pipeline</div>
+      <div class="section-desc">All analyses were conducted in Python using NumPy, with statistical methods implemented from first principles to ensure transparency and reproducibility. The pipeline combines descriptive analysis, two predictive models, survival analysis, and unsupervised clustering, each targeting a specific research question.</div>
+    </div>
+    <div class="pipeline reveal">
+      <div class="pipe-step">
+        <div class="pipe-dot">1</div>
+        <h4>Data Preparation</h4>
+        <p>861 encounters from the MHRF. Two binary outcome variables were constructed: a severity flag combining four escalation pathways (involuntary handoff with at least one commitment criterion met, force used, subject injury, injury to others), and a person-level repeat contact flag for individuals with more than one encounter in the dataset.</p>
+        <span class="pipe-tag">Feature Engineering</span>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-dot">2</div>
+        <h4>Descriptive Analysis</h4>
+        <p>Temporal trends, behavioral indicators, housing status, call type, geographic distribution, and response model variation were examined to characterize the dataset and identify whether cross-sectional comparisons were confounded by changes over time.</p>
+        <span class="pipe-tag">Chi-Square Tests</span>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-dot">3</div>
+        <h4>Severity Model</h4>
+        <p>L2-regularized logistic regression (lambda = 0.001) on 17 predictors: eight behavioral indicators, substance involvement, housing status, probable cause, three call type indicators, and age. Responding agency was deliberately excluded as a predictor. Evaluated on an 80/20 train-test split (n=688 train, n=173 test) with 500-iteration bootstrap standard errors. PCA applied as a robustness check: 11 components captured 82.7% of variance, yielding a test AUC of 0.719.</p>
+        <span class="pipe-tag">Logistic Regression + PCA</span>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-dot">4</div>
+        <h4>Repeat Contact Analysis</h4>
+        <p>Cox proportional hazards model on 609 unique individuals, modeling time between first and next encounter with right censoring for individuals who had no repeat contact by the end of follow-up. Kaplan-Meier survival curves stratified by housing status and first-encounter severity, with log-rank tests for between-group differences. Performance evaluated by concordance index (C-index).</p>
+        <span class="pipe-tag">Cox PH + Kaplan-Meier</span>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-dot">5</div>
+        <h4>Encounter Typology</h4>
+        <p>K-modes clustering on 10 presentation features (eight behavioral indicators, substance involvement, housing status) with k = 4 and 30 random initializations, selecting the partition with the lowest total dissimilarity cost. Severity and repeat contact were excluded from the clustering inputs and examined only as outcomes.</p>
+        <span class="pipe-tag">K-Modes Clustering</span>
+      </div>
+    </div>
+
+    <!-- TECH STACK -->
+    <div class="reveal" style="margin-top: 4.5rem;">
+      <div class="section-label" style="text-align:center;">Tools &amp; Technologies</div>
+      <h3 style="font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:600; text-align:center; margin-bottom:0.5rem;">Analytical Stack</h3>
+      <p style="color:var(--text-secondary); font-size:0.9rem; text-align:center; max-width:620px; margin:0 auto;">Every method and every library used, from raw data to final dashboard.</p>
+    </div>
+    <div class="stack-grid reveal">
+      <div class="stack-card">
+        <div class="stack-icon" style="background:var(--accent-soft); color:var(--accent-light);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+        <div class="stack-title">Languages</div>
+        <div class="stack-items">
+          <span class="stack-tag">Python 3.11</span>
+          <span class="stack-tag">R</span>
+          <span class="stack-tag">SQL</span>
+        </div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-icon" style="background:var(--teal-soft); color:var(--teal-light);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        </div>
+        <div class="stack-title">Modeling</div>
+        <div class="stack-items">
+          <span class="stack-tag">scikit-learn</span>
+          <span class="stack-tag">statsmodels</span>
+          <span class="stack-tag">lifelines</span>
+          <span class="stack-tag">kmodes</span>
+        </div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-icon" style="background:var(--amber-soft); color:var(--amber);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </div>
+        <div class="stack-title">Data &amp; Analysis</div>
+        <div class="stack-items">
+          <span class="stack-tag">pandas</span>
+          <span class="stack-tag">NumPy</span>
+          <span class="stack-tag">SciPy</span>
+          <span class="stack-tag">PCA</span>
+        </div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-icon" style="background:var(--rose-soft); color:var(--rose);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+        </div>
+        <div class="stack-title">Visualization</div>
+        <div class="stack-items">
+          <span class="stack-tag">matplotlib</span>
+          <span class="stack-tag">seaborn</span>
+          <span class="stack-tag">Chart.js</span>
+          <span class="stack-tag">Tableau</span>
+        </div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-icon" style="background:var(--emerald-soft); color:var(--emerald);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <div class="stack-title">Statistical Methods</div>
+        <div class="stack-items">
+          <span class="stack-tag">Logistic Regression</span>
+          <span class="stack-tag">Cox PH</span>
+          <span class="stack-tag">Kaplan-Meier</span>
+          <span class="stack-tag">Chi-Square</span>
+        </div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-icon" style="background:var(--accent-soft); color:var(--accent-light);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+        </div>
+        <div class="stack-title">Workflow</div>
+        <div class="stack-items">
+          <span class="stack-tag">Jupyter</span>
+          <span class="stack-tag">Git</span>
+          <span class="stack-tag">VS Code</span>
+          <span class="stack-tag">LaTeX</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══ FINDING 1: DISPATCH TRIAGE ═══ -->
+<section id="findings" class="story-section">
+  <div class="story-inner">
+    <div class="reveal">
+      <div class="section-label">Key Findings</div>
+      <div class="section-title">What the Data Revealed</div>
+      <div class="section-desc">Three central findings emerged from the analysis, each grounded in a specific model and each pointing toward specific policy changes for the Missoula crisis response system.</div>
+    </div>
+
+    <div class="story-block reveal">
+      <div class="story-text">
+        <div class="story-chapter" style="color:var(--accent-light);"><div class="ch-dot" style="background:var(--accent);"></div> Finding 1</div>
+        <h2>Dispatch Triage Is Working</h2>
+        <p>Severity rates range from <span class="highlight-stat hl-teal">4.1%</span> (MST-only) to <span class="highlight-stat hl-amber">50.3%</span> (co-response) to <span class="highlight-stat hl-rose">65.0%</span> (MPD-only), confirmed by chi-square (<span class="highlight-stat hl-rose">&chi;&sup2; = 198.1, p &lt; 0.001</span>). The gradient persists within call types (e.g., suicidal calls: MST 1.4%, co-response 42.4%, LE 53.8%), meaning dispatchers route based on cues beyond call category. This is a signal that triage is effective.</p>
+      </div>
+      <div class="story-visual">
+        <div class="chart-wrap">
+          <canvas id="chart-severity"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- FINDING 2: SEVERITY PREDICTORS -->
+    <div class="story-block reverse reveal">
+      <div class="story-text">
+        <div class="story-chapter" style="color:var(--teal-light);"><div class="ch-dot" style="background:var(--teal);"></div> Finding 2</div>
+        <h2>What Predicts Severity</h2>
+        <p>The four strongest predictors: <span class="highlight-stat hl-rose">Confusion (+0.70)</span>, <span class="highlight-stat hl-rose">Disorganized Speech (+0.67)</span>, <span class="highlight-stat hl-rose">Suicidal/Self-Harm Call (+0.66)</span>, and <span class="highlight-stat hl-rose">Substance Involvement (+0.62)</span>. On the protective side: welfare checks <span class="highlight-stat hl-teal">(&minus;1.05)</span>, scared/frightened <span class="highlight-stat hl-teal">(&minus;0.47)</span>, and housed status <span class="highlight-stat hl-teal">(&minus;0.46)</span>. Depression, the most common indicator, is not a significant predictor.</p>
+        <p>PCA robustness check: 11 components captured <span class="highlight-stat hl-teal">82.7%</span> of variance, achieving test AUC of <span class="highlight-stat hl-teal">0.719</span>. Severity is predictable from features observable at the scene.</p>
+      </div>
+      <div class="story-visual">
+        <div class="chart-wrap-tall">
+          <canvas id="chart-coefficients"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- FINDING 3: REPEAT ENCOUNTERS -->
+    <div class="story-block reveal">
+      <div class="story-text">
+        <div class="story-chapter" style="color:var(--amber);"><div class="ch-dot" style="background:var(--amber);"></div> Finding 3</div>
+        <h2>Repeat Contact Is Not Predictable from the Encounter</h2>
+        <p>The Cox proportional hazards model test concordance dropped to <span class="highlight-stat hl-rose">C-index = 0.461</span>, worse than random. Encounter-level features cannot predict who returns. Only substance involvement reached significance (protective, <span class="highlight-stat hl-teal">HR = 0.60</span>). What makes an encounter severe is not what brings someone back.</p>
+        <p>Kaplan-Meier curves by housing: unhoused individuals return faster (log-rank <span class="highlight-stat hl-rose">p &lt; 0.01</span>), with 33% returning by day 400 vs. 18% of housed. First-encounter severity did not predict return (p = 0.11). Chronic crisis utilization appears driven by structural factors between encounters, not encounter-level features.</p>
+      </div>
+      <div class="story-visual">
+        <div class="chart-wrap">
+          <canvas id="chart-calltype"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══ ENCOUNTER TYPOLOGY ═══ -->
+<section id="typology" class="full-bleed">
+  <div class="section-wrap">
+    <div class="reveal">
+      <div class="section-label">Encounter Typology</div>
+      <div class="section-title">The Severity-Repeat Disconnect</div>
+      <div class="section-desc">K-modes clustering on 10 presentation features revealed four distinct encounter typologies. The most striking pattern: severity and repeat contact move in opposite directions.</div>
+    </div>
+
+    <div class="typology-grid">
+      <div class="typo-card reveal reveal-delay-1">
+        <div class="typo-name">Minimal Presentation</div>
+        <div class="typo-n">n = 328 &middot; 45% of encounters</div>
+        <div class="typo-metric">
+          <div class="typo-metric-label">Severity</div>
+          <div class="typo-metric-value" style="color:var(--accent-light);">33%</div>
+          <div class="typo-bar"><div class="typo-bar-fill" style="width:33%; background:var(--accent);"></div></div>
+        </div>
+        <div class="typo-metric">
+          <div class="typo-metric-label">Repeat Rate</div>
+          <div class="typo-metric-value" style="color:var(--accent-light);">28%</div>
+          <div class="typo-bar"><div class="typo-bar-fill" style="width:93%; background:var(--accent-light);"></div></div>
+        </div>
+        <div class="typo-desc">Lowest severity, yet generates <strong>45% of all repeat encounters</strong> (92 of 205). No dominant behavioral indicator. A third are unhoused. The largest driver of system re-contact.</div>
+      </div>
+
+      <div class="typo-card reveal reveal-delay-2">
+        <div class="typo-name">Depressive Presentation</div>
+        <div class="typo-n">n = 264 &middot; 29% of encounters</div>
+        <div class="typo-metric">
+          <div class="typo-metric-label">Severity</div>
+          <div class="typo-metric-value" style="color:var(--teal-light);">39%</div>
+          <div class="typo-bar"><div class="typo-bar-fill" style="width:39%; background:var(--teal);"></div></div>
+        </div>
+        <div class="typo-metric">
+          <div class="typo-metric-label">Repeat Rate</div>
+          <div class="typo-metric-value" style="color:var(--teal-light);">29%</div>
+          <div class="typo-bar"><div class="typo-bar-fill" style="width:96%; background:var(--teal-light);"></div></div>
+        </div>
+        <div class="typo-desc">100% document depressed mood. Nearly two-thirds are suicidal/self-harm calls. Highest repeat rate of any cluster. Needs sustained mental health follow-up.</div>
+      </div>
+
+      <div class="typo-card reveal reveal-delay-3">
+        <div class="typo-name">Substance-Involved</div>
+        <div class="typo-n">n = 139 &middot; 14% of encounters</div>
+        <div class="typo-metric">
+          <div class="typo-metric-label">Severity</div>
+          <div class="typo-metric-value" style="color:var(--amber);">42%</div>
+          <div class="typo-bar"><div class="typo-bar-fill" style="width:42%; background:var(--amber);"></div></div>
+        </div>
+        <div class="typo-metric">
+          <div class="typo-metric-label">Repeat Rate</div>
+          <div class="typo-metric-value" style="color:var(--amber);">20%</div>
+          <div class="typo-bar"><div class="typo-bar-fill" style="width:66%; background:rgba(251,146,60,0.6);"></div></div>
+        </div>
+        <div class="typo-desc">100% document substance use. Moderate severity, lower repeat rate. Behavioral indicators moderately elevated across the board. Needs connection to substance services.</div>
+      </div>
+
+      <div class="typo-card reveal reveal-delay-4">
+        <div class="typo-name">Acute Behavioral Crisis</div>
+        <div class="typo-n">n = 130 &middot; 13% of encounters</div>
+        <div class="typo-metric">
+          <div class="typo-metric-label">Severity</div>
+          <div class="typo-metric-value" style="color:var(--rose);">62%</div>
+          <div class="typo-bar"><div class="typo-bar-fill" style="width:62%; background:var(--rose);"></div></div>
+        </div>
+        <div class="typo-metric">
+          <div class="typo-metric-label">Repeat Rate</div>
+          <div class="typo-metric-value" style="color:var(--rose);">20%</div>
+          <div class="typo-bar"><div class="typo-bar-fill" style="width:66%; background:rgba(167,139,250,0.6);"></div></div>
+        </div>
+        <div class="typo-desc">Smallest but most intense. Confusion (81%), disorganized speech (77%), delusions (65%), manic behavior (58%). <strong>Highest severity, lowest repeat rate.</strong> Immediate de-escalation focus.</div>
+      </div>
+    </div>
+
+    <!-- Typology Chart -->
+    <div style="margin-top: 3rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 2rem;" class="reveal">
+      <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">The cluster with the highest severity (Acute, 62%) has the lowest repeat rate. The cluster with the lowest severity (Minimal, 33%) generates nearly half of all repeat encounters. This requires fundamentally different intervention strategies.</p>
+      <div class="chart-wrap">
+        <canvas id="chart-typology"></canvas>
+      </div>
+    </div>
+
+    <!-- Typology Radar Chart: Behavioral Profile by Encounter Typology -->
+    <div style="margin-top: 2rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 2rem 2rem 2.25rem;" class="reveal">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem;">
+        <h3 style="margin: 0; font-size: 1rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary);">Behavioral Profile by Encounter Typology</h3>
+        <span style="font-size: 0.72rem; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase;">Prevalence across 10 presentation features</span>
+      </div>
+      <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem; max-width: 780px;">Each cluster occupies a distinct region of the behavioral indicator space. Depressive Presentation extends fully along the depression axis. Acute Behavioral Crisis dominates confusion, disorganized speech, delusions, and manic dimensions. Substance-Involved extends fully on the substance axis. Minimal Presentation holds the smallest footprint across all behavioral indicators, yet generates nearly half of all repeat encounters, exactly the pattern that drives the severity-repeat disconnect.</p>
+      <div class="radar-wrap">
+        <canvas id="chart-typology-radar"></canvas>
+      </div>
+      <p style="font-size: 0.7rem; color: var(--text-dim); font-style: italic; text-align: center; margin-top: 1rem;">Source: Figure 16, <em>From Paper to Prediction</em> (Calderwood, 2026). Cluster prevalence values reported directly from the paper's K-modes clustering results.</p>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══ INTERACTIVE SIMULATOR ═══ -->
+<section id="simulator">
+  <div class="section-wrap">
+    <div class="reveal">
+      <div class="section-label">Interactive</div>
+      <div class="section-title">Crisis Encounter Simulator</div>
+      <div class="section-desc">Configure a hypothetical encounter scenario using the study's logistic regression coefficients. The simulator estimates severity probability and classifies the encounter into its likely typology. For educational demonstration only.</div>
+    </div>
+
+    <div class="simulator-wrap reveal">
+      <div class="sim-header">
+        <h3>Severity Prediction Engine</h3>
+        <p>Select encounter parameters below. The model applies the actual logistic regression coefficients from the study to estimate the probability of a severe outcome.</p>
+      </div>
+      <div class="sim-grid">
+        <div class="sim-form">
+          <div class="form-group">
+            <label>Response Model</label>
+            <select id="sim-response">
+              <option value="mst">MST Only (Mobile Support Team)</option>
+              <option value="co">Co-Response (MST + Law Enforcement)</option>
+              <option value="le" selected>Law Enforcement Only</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Call Type</label>
+            <select id="sim-calltype">
+              <option value="suicidal">Suicidal / Self-Harm</option>
+              <option value="welfare">Welfare Check</option>
+              <option value="assist">Person Needs Assistance</option>
+              <option value="disturbance">Disturbance / Disorderly</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Housing Status</label>
+            <select id="sim-housing">
+              <option value="housed">Housed</option>
+              <option value="unhoused">Unhoused</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Behavioral Indicators Present</label>
+            <div class="checkbox-grid">
+              <label class="cb-label"><input type="checkbox" id="sim-confused"> Confused</label>
+              <label class="cb-label"><input type="checkbox" id="sim-disorg"> Disorg. Speech</label>
+              <label class="cb-label"><input type="checkbox" id="sim-substance"> Substance Use</label>
+              <label class="cb-label"><input type="checkbox" id="sim-scared"> Scared/Frightened</label>
+              <label class="cb-label"><input type="checkbox" id="sim-depressed"> Depressed Mood</label>
+              <label class="cb-label"><input type="checkbox" id="sim-delusions"> Delusions</label>
+              <label class="cb-label"><input type="checkbox" id="sim-manic"> Manic Behavior</label>
+              <label class="cb-label"><input type="checkbox" id="sim-halluc"> Hallucinations</label>
+            </div>
+          </div>
+          <button class="predict-btn" onclick="runPrediction()">Run Severity Prediction</button>
+        </div>
+        <div class="sim-results">
+          <div class="result-placeholder" id="result-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <p>Configure encounter parameters and run the prediction to see estimated severity probability and typology classification.</p>
+          </div>
+          <div class="result-output" id="result-output">
+            <div class="risk-gauge">
+              <div class="risk-gauge-label">Estimated Severity Probability</div>
+              <div class="risk-ring">
+                <span class="risk-pct" id="risk-pct">0%</span>
+                <span class="risk-label">severity</span>
+              </div>
+            </div>
+            <div class="factor-list" id="factor-list"></div>
+            <div class="cluster-box" id="cluster-box"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══ POLICY IMPLICATIONS ═══ -->
+<section id="policy" class="full-bleed">
+  <div class="section-wrap">
+    <div class="reveal">
+      <div class="section-label">Policy Implications</div>
+      <div class="section-title">Recommendations for Missoula</div>
+      <div class="section-desc">Five evidence-based recommendations, each tied directly to findings from the analysis.</div>
+    </div>
+    <div class="policy-grid">
+      <div class="policy-card reveal reveal-delay-1">
+        <div class="policy-num">Recommendation 01</div>
+        <h3>Structured Follow-Up for Low-Acuity Encounters</h3>
+        <p>The Minimal Presentation cluster generates 45% of all repeat contacts despite having the lowest severity rate (33%). A structured follow-up protocol for encounters without clear clinical markers could reduce the single largest source of repeat system contact.</p>
+      </div>
+      <div class="policy-card reveal reveal-delay-2">
+        <div class="policy-num">Recommendation 02</div>
+        <h3>Recognize Dispatch Triage as an Asset</h3>
+        <p>The severity gradient across response models is real and persists within call types. MST's 1.4% severity rate among suicidal calls reflects effective routing, not easier calls. This system should be preserved and studied as a model for other communities.</p>
+      </div>
+      <div class="policy-card reveal reveal-delay-3">
+        <div class="policy-num">Recommendation 03</div>
+        <h3>Expand Behavioral Health Response Capacity</h3>
+        <p>MST currently operates 10 AM&ndash;8 PM, seven days a week. Any call outside that window is handled by law enforcement alone, regardless of risk level. Extending MST into evening and overnight hours would let more low-risk calls be resolved through behavioral health and free officer capacity for calls that genuinely require it.</p>
+      </div>
+      <div class="policy-card reveal reveal-delay-4">
+        <div class="policy-num">Recommendation 04</div>
+        <h3>Target Training to the Strongest Severity Predictors</h3>
+        <p>The severity model points at four specific presentations: confusion, disorganized speech, suicidal/self-harm calls, and substance involvement. CIT Academy content focused on recognizing and de-escalating those signals (rather than general mental-health awareness) would land closer to the encounters most likely to escalate.</p>
+      </div>
+      <div class="policy-card reveal">
+        <div class="policy-num">Recommendation 05</div>
+        <h3>Separate Repeat-Contact Interventions from Encounter-Level Work</h3>
+        <p>Encounter-level features cannot predict who will return (Cox test C-index = 0.461). Housing is the one factor with a clear link to return speed. Reducing chronic crisis utilization means investing in housing stability, outpatient linkage, and case management between encounters, not in optimizing the encounter itself.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══ IMPACT ═══ -->
+<section id="impact">
+  <div class="section-wrap">
+    <div class="reveal">
+      <div class="section-label">What This Work Produced</div>
+      <div class="section-title">Deliverables</div>
+      <div class="section-desc">Four concrete outputs from the analysis, each tied to a specific question the original data could not answer.</div>
+    </div>
+    <div class="impact-grid">
+      <div class="impact-card reveal reveal-delay-1">
+        <div class="impact-num">861</div>
+        <div class="impact-title">Encounters analyzed</div>
+        <div class="impact-desc">The first encounter-level analysis of Missoula's crisis response system, covering 14 months of Mental Health Referral Form data and 609 unique individuals.</div>
+      </div>
+      <div class="impact-card reveal reveal-delay-2">
+        <div class="impact-num">AUC 0.72</div>
+        <div class="impact-title">Severity prediction model</div>
+        <div class="impact-desc">An L2-regularized logistic regression pipeline using PCA (11 components, 82.7% variance) that flags high-severity encounters from features available at the scene.</div>
+      </div>
+      <div class="impact-card reveal reveal-delay-3">
+        <div class="impact-num">4</div>
+        <div class="impact-title">Encounter typologies</div>
+        <div class="impact-desc">K-modes clustering on ten behavioral indicators produced four stable encounter types with distinct severity and repeat-contact profiles.</div>
+      </div>
+      <div class="impact-card reveal reveal-delay-4">
+        <div class="impact-num">5</div>
+        <div class="impact-title">Policy recommendations</div>
+        <div class="impact-desc">Five evidence-based recommendations for the Missoula crisis response system, each traceable to a specific finding in the analysis.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══ CIT ACADEMY EVALUATION (Training) ═══ -->
+<section id="training" class="training-section">
+  <div class="section-wrap">
+    <div class="reveal" style="text-align:center;">
+      <div class="section-label">CIT Academy Evaluation</div>
+      <div class="section-title">Does the Training Stick?</div>
+      <div class="section-desc">A parallel evaluation of Missoula's 40-hour Crisis Intervention Team Academy, administered to Missoula Law Enforcement across four timepoints: Pre-training (n = 15), Immediate Post (n = 7), 3 to 6 month follow-up (n = 10), and 12 month follow-up (n = 4). Eight Knowledge, Skills, and Abilities (KSA) items were rated on a 1 to 5 ordinal scale.</div>
+    </div>
+
+    <div class="training-layout">
+      <div class="training-chart-card reveal">
+        <h4>Composite KSA Index Over Time</h4>
+        <p class="training-sub">Row-wise average of all eight KSA items, Missoula Law Enforcement subgroup.</p>
+        <div class="training-chart-wrap">
+          <canvas id="chart-ksa-trajectory"></canvas>
+        </div>
+        <div class="training-stat-row">
+          <div class="training-stat">
+            <div class="training-stat-val">2.57</div>
+            <div class="training-stat-label">Pre</div>
+          </div>
+          <div class="training-stat">
+            <div class="training-stat-val">3.57</div>
+            <div class="training-stat-label">Post</div>
+          </div>
+          <div class="training-stat">
+            <div class="training-stat-val">3.43</div>
+            <div class="training-stat-label">3 to 6 mo</div>
+          </div>
+          <div class="training-stat">
+            <div class="training-stat-val">3.53</div>
+            <div class="training-stat-label">12 mo</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="training-side-card reveal reveal-delay-1">
+        <h4>Pre to Post Gains by KSA Domain</h4>
+        <p class="training-sub">Welch's t-tests with Cohen's d effect sizes. Seven of eight domains significant at p &lt; .05.</p>
+        <table class="training-ksa-table">
+          <thead>
+            <tr>
+              <th>Domain</th>
+              <th class="num">Pre</th>
+              <th class="num">Post</th>
+              <th class="num">d</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Preparedness to engage</td><td class="num">2.73</td><td class="num">4.00</td><td class="num ksa-d">3.31</td></tr>
+            <tr><td>Familiarity with system roles</td><td class="num">2.40</td><td class="num">3.57</td><td class="num ksa-d">2.27</td></tr>
+            <tr><td>Confidence in de-escalation</td><td class="num">2.87</td><td class="num">3.86</td><td class="num ksa-d">2.07</td></tr>
+            <tr><td>Awareness of community resources</td><td class="num">2.47</td><td class="num">3.71</td><td class="num ksa-d">1.84</td></tr>
+            <tr><td>Comfort with MH knowledge</td><td class="num">2.60</td><td class="num">3.57</td><td class="num ksa-d">1.61</td></tr>
+            <tr><td>Knowledge of civil commitment</td><td class="num">2.13</td><td class="num">3.14</td><td class="num ksa-d">1.54</td></tr>
+            <tr><td>Comfort engaging in crisis</td><td class="num">2.87</td><td class="num">3.57</td><td class="num ksa-d">1.35</td></tr>
+            <tr><td>Professional liability knowledge</td><td class="num">2.47</td><td class="num">3.14</td><td class="num ksa-d">1.03</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="training-narrative reveal">
+      <p>All eight KSA domains increased from Pre to Post (Cohen's d: 1.03 to 3.31). The largest gain was in <strong>preparedness to engage in crisis</strong> (2.73 &rarr; 4.00, d = 3.31). ANOVA confirmed significant stage effects for all domains (all p &le; .01). The Composite KSA Index held at 3.43&ndash;3.53 through 12-month follow-up, well above the 2.57 baseline. The training produces durable competency shifts, though the small 12-month sample (n = 4) limits long-term claims.</p>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══ LIMITATIONS ═══ -->
+<section id="limitations">
+  <div class="section-wrap">
+    <div class="reveal">
+      <div class="section-label">Limitations</div>
+      <div class="section-title">What This Study Cannot Say</div>
+      <div class="section-desc">Transparent boundaries on the claims this analysis can and cannot support, drawn directly from the written report.</div>
+    </div>
+    <div class="limit-grid reveal">
+      <div class="limit-card">
+        <h4>Dispatch Selection</h4>
+        <p>Responding agency is not randomly assigned. Within-call-type analysis confirms the severity gradient reflects triage, but a fully causal interpretation would require an instrumental variable design.</p>
+      </div>
+      <div class="limit-card">
+        <h4>Reporting Bias</h4>
+        <p>The MHRF is completed by the responding professional, introducing variation in documentation. MST and MPD staff may document differently based on training and institutional norms.</p>
+      </div>
+      <div class="limit-card">
+        <h4>Model Generalizability</h4>
+        <p>The severity model (test AUC 0.719) identifies associated features but should not be used as a clinical screening tool without further validation. The repeat model (C-index 0.461) confirms encounter-level features have no predictive value for return.</p>
+      </div>
+      <div class="limit-card">
+        <h4>Study Window</h4>
+        <p>The 14-month window may not capture long-term trends. The dataset lacks diagnosis, treatment history, and post-encounter outcomes. Individual timestamps are unavailable, limiting analysis of after-hours staffing effects.</p>
+      </div>
+      <div class="limit-card">
+        <h4>Data Collection</h4>
+        <p>Paper-based forms with manual data entry introduce inconsistency and an average 18-day delay. Person IDs were reconstructed from partial information; some linking errors may remain.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══ ABOUT THE ANALYST ═══ -->
+<section id="about" class="full-bleed">
+  <div class="section-wrap">
+    <div class="reveal">
+      <div class="section-label">About</div>
+      <div class="section-title">About the Analyst</div>
+      <div class="section-desc">Bringing applied statistics to questions that matter locally.</div>
+    </div>
+    <div class="about-wrap reveal">
+      <div class="about-avatar">
+        <div class="about-avatar-initials">MC</div>
+      </div>
+      <div class="about-text">
+        <h3>Michelle Calderwood</h3>
+        <div class="about-role">MSBA Candidate &middot; University of Montana</div>
+        <p>Hi, I'm Michelle. I'm finishing my MSBA at the University of Montana, and this is the project I've been living inside for the last year.</p>
+        <p>I started it because I wanted to know what happens after the 911 call. Missoula's crisis system sees hundreds of people a year, and almost none of what it learns about them gets fed back into how the system actually runs. That gap bothered me enough to spend a year in a spreadsheet.</p>
+        <p>Somewhere around encounter number 400, I stopped being able to look at a row without thinking about the person in it. That's the part of analytics work I care about most: keeping the numbers honest without forgetting they're about someone's worst day. This portfolio is my attempt to hold both.</p>
+        <div class="about-skills">
+          <span class="about-skill">Applied Statistics</span>
+          <span class="about-skill">Predictive Modeling</span>
+          <span class="about-skill">Survival Analysis</span>
+          <span class="about-skill">Clustering</span>
+          <span class="about-skill">Data Storytelling</span>
+          <span class="about-skill">Python &middot; R &middot; SQL</span>
+          <span class="about-skill">Working with Public-Sector Partners</span>
+        </div>
+        <div class="about-contact">
+          <a href="mailto:ma.michelle@outlook.com" class="about-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Email
+          </a>
+          <a href="#hero" class="about-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            Full Paper (coming soon)
+          </a>
+          <a href="#hero" class="about-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            GitHub (coming soon)
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Acknowledgements -->
+    <div class="reveal" style="margin-top: 4rem; padding: 2rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); max-width: 900px; margin-left: auto; margin-right: auto;">
+      <div class="section-label" style="margin-bottom: 0.75rem;">Thank You</div>
+      <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.8;">Thank you to the Missoula Mobile Support Team, the Missoula Police Department, and the Missoula County Sheriff's Office for trusting a graduate student with this data, and for the patience it took to answer a year's worth of questions. Thank you to my MSBA faculty advisors for the redline marks, the pushback, and the encouragement at roughly equal measures. Every record in this study is de-identified and was analyzed under an approved research agreement.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer-inner">
+    <img class="footer-logo" src="assets/cit-montana-logo.png" alt="CIT Montana logo" />
+    <p class="footer-name">Michelle Calderwood</p>
+    <p>University of Montana &middot; Master of Science in Business Analytics &middot; 2026</p>
+    <p style="margin-top: 0.75rem;"><a href="mailto:ma.michelle@outlook.com">ma.michelle@outlook.com</a></p>
+    <p style="margin-top: 1.5rem; font-size: 0.72rem; color: var(--text-dim);">Data source: Missoula Mental Health Referral Form (MHRF) &middot; March 2024 &ndash; Feb 2026 &middot; All data de-identified</p>
+    <p style="margin-top: 0.75rem; font-size: 0.7rem; color: var(--text-dim);">&copy; 2026 Michelle Calderwood &middot; In partnership with CIT &amp; MPD &middot; Built with Chart.js</p>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════
+     SCRIPTS
+     ═══════════════════════════════════════════ -->
+<script>
+// ===== PARTICLES =====
+const pEl = document.getElementById('particles');
+for (let i = 0; i < 50; i++) {
+  const d = document.createElement('div');
+  d.className = 'particle';
+  const size = 2 + Math.random() * 4;
+  d.style.width = size + 'px'; d.style.height = size + 'px';
+  d.style.left = Math.random() * 100 + '%';
+  d.style.animationDelay = Math.random() * 10 + 's';
+  d.style.animationDuration = (8 + Math.random() * 8) + 's';
+  d.style.background = ['#6366f1','#14b8a6','#818cf8','#5eead4'][Math.floor(Math.random()*4)];
+  pEl.appendChild(d);
+}
+
+// ===== NAV SCROLL =====
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', scrollY > 80);
+});
+
+// ===== SCROLL REVEAL =====
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+// ===== COUNTER ANIMATION =====
+const counterObs = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      document.querySelectorAll('.hero-stat-number').forEach(el => {
+        const target = +el.dataset.target;
+        const suffix = el.dataset.suffix || '';
+        let cur = 0;
+        const step = target / 50;
+        const t = setInterval(() => {
+          cur += step;
+          if (cur >= target) { cur = target; clearInterval(t); }
+          el.textContent = Math.floor(cur) + suffix;
+        }, 30);
+      });
+      counterObs.disconnect();
+    }
+  });
+}, { threshold: 0.5 });
+counterObs.observe(document.querySelector('.hero-stats'));
+
+// ===== ACTIVE NAV =====
+const secs = document.querySelectorAll('section[id]');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  secs.forEach(s => { if (scrollY >= s.offsetTop - 150) cur = s.id; });
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + cur);
+  });
+});
+
+// ═══════════════════════════════════════════
+// INTERACTIVE MISSOULA MAP (Leaflet)
+// ═══════════════════════════════════════════
+(function initMissoulaMap() {
+  if (typeof L === 'undefined' || !document.getElementById('missoula-map')) return;
+
+  var map = L.map('missoula-map', {
+    center: [46.8721, -113.9940],
+    zoom: 13,
+    scrollWheelZoom: false,
+    zoomControl: true
+  });
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OpenStreetMap &copy; CARTO',
+    subdomains: 'abcd',
+    maxZoom: 19
+  }).addTo(map);
+
+  var hotspots = [
+    {
+      name: 'Broadway Corridor',
+      coords: [46.8725, -114.0150],
+      volume: 98,
+      share: '12.1%',
+      severity: '29.6%',
+      repeat: '35.8%',
+      color: '#a78bfa',
+      radius: 22,
+      note: 'Highest-activity corridor. Near shelters and service access points.'
+    },
+    {
+      name: '1100 Block W Broadway',
+      coords: [46.8728, -114.0195],
+      volume: 23,
+      share: '2.8%',
+      severity: 'n/a',
+      repeat: 'n/a',
+      color: '#a78bfa',
+      radius: 14,
+      note: 'Single highest-volume individual address.'
+    },
+    {
+      name: 'North Avenue Area',
+      coords: [46.8820, -113.9900],
+      volume: 46,
+      share: '5.7%',
+      severity: 'Avg.',
+      repeat: 'Avg.',
+      color: '#14b8a6',
+      radius: 17,
+      note: 'Residential corridor with sustained moderate volume.'
+    },
+    {
+      name: 'Downtown Grid',
+      coords: [46.8705, -113.9940],
+      volume: 24,
+      share: '3.0%',
+      severity: 'Avg.',
+      repeat: 'Avg.',
+      color: '#14b8a6',
+      radius: 14,
+      note: 'Central business district. Mixed call types.'
+    },
+    {
+      name: 'Front St / Riverfront',
+      coords: [46.8690, -113.9910],
+      volume: 15,
+      share: '1.9%',
+      severity: '53.3%',
+      repeat: '73.3%',
+      color: '#fb923c',
+      radius: 13,
+      note: 'Elevated severity and very high repeat contact.'
+    },
+    {
+      name: 'South 3rd Street',
+      coords: [46.8630, -113.9980],
+      volume: 17,
+      share: '2.1%',
+      severity: '52.9%',
+      repeat: '6.2%',
+      color: '#fb923c',
+      radius: 13,
+      note: 'High severity but low repeat contact.'
+    },
+    {
+      name: 'Reserve Street Commercial Strip',
+      coords: [46.8780, -114.0350],
+      volume: 20,
+      share: '2.5%',
+      severity: 'Avg.',
+      repeat: 'Avg.',
+      color: '#14b8a6',
+      radius: 14,
+      note: 'Commercial corridor with retail and transit hubs.'
+    }
+  ];
+
+  hotspots.forEach(function(h) {
+    var marker = L.circleMarker(h.coords, {
+      radius: h.radius,
+      color: h.color,
+      weight: 2,
+      fillColor: h.color,
+      fillOpacity: 0.38
+    }).addTo(map);
+
+    var popupHtml =
+      '<h5>' + h.name + '</h5>' +
+      '<div class="pop-row"><span class="pop-label">Encounters</span><span class="pop-val">' + h.volume + '</span></div>' +
+      '<div class="pop-row"><span class="pop-label">Share of total</span><span class="pop-val">' + h.share + '</span></div>' +
+      '<div class="pop-row"><span class="pop-label">Severity rate</span><span class="pop-val">' + h.severity + '</span></div>' +
+      '<div class="pop-row"><span class="pop-label">Repeat rate</span><span class="pop-val">' + h.repeat + '</span></div>' +
+      '<div class="pop-note">' + h.note + '</div>';
+
+    marker.bindPopup(popupHtml, { maxWidth: 260 });
+  });
+
+  map.on('click', function() { map.scrollWheelZoom.enable(); });
+  map.on('mouseout', function() { map.scrollWheelZoom.disable(); });
+})();
+
+// ═══════════════════════════════════════════
+// CHART CONFIGURATION
+// ═══════════════════════════════════════════
+Chart.defaults.color = '#94a3b8';
+Chart.defaults.font.family = 'Inter, sans-serif';
+Chart.defaults.font.size = 12;
+
+// --- CALL TYPE DISTRIBUTION (Descriptive) ---
+new Chart(document.getElementById('chart-calltype-dist'), {
+  type: 'bar',
+  data: {
+    labels: ['Suicidal/\nSelf-Harm', 'Person Needs\nAssistance', 'Welfare\nCheck', 'Trespass/\nDisorderly', 'Assault/\nViolence', 'MH Other'],
+    datasets: [
+      {
+        label: 'Severity Rate (%)',
+        data: [39.8, 15.3, 51.6, 78.6, 69.2, 65.0],
+        backgroundColor: ['rgba(99,102,241,0.5)','rgba(20,184,166,0.5)','rgba(251,146,60,0.5)','rgba(167,139,250,0.5)','rgba(167,139,250,0.4)','rgba(167,139,250,0.35)'],
+        borderColor: ['#6366f1','#14b8a6','#fb923c','#a78bfa','#a78bfa','#a78bfa'],
+        borderWidth: 1, borderRadius: 4,
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: c => 'Severity: ' + c.parsed.y + '%' } }
+    },
+    scales: {
+      y: { beginAtZero: true, max: 100, ticks: { callback: v => v + '%', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
+      x: { grid: { display: false }, ticks: { font: { size: 9 } } }
+    }
+  }
+});
+
+// --- RESPONSE MODEL DISTRIBUTION (horizontal bar, no pie chart) ---
+new Chart(document.getElementById('chart-response-dist'), {
+  type: 'bar',
+  data: {
+    labels: ['Law Enforcement Only', 'MST Solo', 'Co-Response', 'Other'],
+    datasets: [{
+      label: '% of Encounters',
+      data: [39.5, 28.5, 17.5, 14.5],
+      backgroundColor: ['rgba(167,139,250,0.6)', 'rgba(20,184,166,0.6)', 'rgba(251,146,60,0.6)', 'rgba(100,116,139,0.4)'],
+      borderColor: ['#a78bfa', '#14b8a6', '#fb923c', '#64748b'],
+      borderWidth: 1,
+      borderRadius: 4,
+      barPercentage: 0.7,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: function(ctx) { return ctx.parsed.x + '% of encounters'; },
+          afterLabel: function(ctx) {
+            const sevRates = ['Severity: 65.0% (MPD) / 34.0% (MCSO)', 'Severity: 4.1%', 'Severity: 50.3%', ''];
+            return sevRates[ctx.dataIndex];
+          }
+        }
+      }
+    },
+    scales: {
+      x: { beginAtZero: true, max: 50, ticks: { callback: function(v){return v+'%';}, font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
+      y: { grid: { display: false }, ticks: { font: { size: 10 } } }
+    }
+  }
+});
+
+// --- SEVERITY BY RESPONSE ---
+new Chart(document.getElementById('chart-severity'), {
+  type: 'bar',
+  data: {
+    labels: ['MST Only', 'Co-Response', 'Law Enforcement Only'],
+    datasets: [
+      {
+        label: 'All Encounters',
+        data: [4.1, 50.3, 65.0],
+        backgroundColor: 'rgba(99,102,241,0.6)',
+        borderColor: '#6366f1', borderWidth: 1, borderRadius: 6,
+      },
+      {
+        label: 'Suicidal/Self-Harm Only (n=332)',
+        data: [1.4, 42.4, 53.8],
+        backgroundColor: 'rgba(20,184,166,0.6)',
+        borderColor: '#14b8a6', borderWidth: 1, borderRadius: 6,
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'top', labels: { padding: 20 } },
+      tooltip: { callbacks: { label: c => c.dataset.label + ': ' + c.parsed.y + '%' } }
+    },
+    scales: {
+      y: { beginAtZero: true, max: 80, ticks: { callback: v => v + '%' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// --- COEFFICIENT CHART ---
+new Chart(document.getElementById('chart-coefficients'), {
+  type: 'bar',
+  data: {
+    labels: [
+      'Confusion', 'Disorganized Speech', 'Suicidal/Self-Harm Call',
+      'Substance Involvement', 'Housed (protective)',
+      'Scared/Frightened (protective)', 'Welfare Check (protective)'
+    ],
+    datasets: [{
+      label: 'Coefficient (β)',
+      data: [0.70, 0.67, 0.66, 0.62, -0.46, -0.47, -1.05],
+      backgroundColor: function(ctx) {
+        return ctx.parsed.x >= 0 ? 'rgba(167,139,250,0.6)' : 'rgba(56,189,248,0.6)';
+      },
+      borderColor: function(ctx) {
+        return ctx.parsed.x >= 0 ? '#a78bfa' : '#38bdf8';
+      },
+      borderWidth: 1, borderRadius: 4,
+    }]
+  },
+  options: {
+    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: { label: c => 'β = ' + (c.parsed.x > 0 ? '+' : '') + c.parsed.x.toFixed(2) + (c.parsed.x > 0 ? ' (increases severity)' : ' (decreases severity)') }
+      }
+    },
+    scales: {
+      x: { grid: { color: 'rgba(255,255,255,0.04)' }, title: { display: true, text: 'Coefficient (β)', color: '#64748b' } },
+      y: { grid: { display: false }, ticks: { font: { size: 11 } } }
+    }
+  }
+});
+
+// --- HOUSING & REPEAT CONTACT (Finding 3 visual) ---
+new Chart(document.getElementById('chart-calltype'), {
+  type: 'bar',
+  data: {
+    labels: ['Housed\n(n=476, 55.3%)', 'Unhoused\n(n=244, 28.3%)', 'Unknown\n(n=84, 9.8%)', 'Facility\n(n=57, 6.6%)'],
+    datasets: [
+      {
+        label: 'Severity Rate (%)',
+        data: [43.5, 29.9, 50.0, 45.6],
+        backgroundColor: 'rgba(167,139,250,0.55)',
+        borderColor: '#a78bfa', borderWidth: 1, borderRadius: 6,
+      },
+      {
+        label: 'Repeat Contact Rate (%)',
+        data: [24.0, 33.6, 12.8, 15.4],
+        backgroundColor: 'rgba(99,102,241,0.55)',
+        borderColor: '#6366f1', borderWidth: 1, borderRadius: 6,
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'top', labels: { padding: 20 } },
+      tooltip: { callbacks: { label: c => c.dataset.label + ': ' + c.parsed.y + '%' } }
+    },
+    scales: {
+      y: { beginAtZero: true, max: 60, ticks: { callback: v => v + '%' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// --- TYPOLOGY COMPARISON ---
+new Chart(document.getElementById('chart-typology'), {
+  type: 'bar',
+  data: {
+    labels: ['Minimal\nPresentation', 'Depressive\nPresentation', 'Substance-\nInvolved', 'Acute Behavioral\nCrisis'],
+    datasets: [
+      {
+        label: 'Severity Rate (%)',
+        data: [33, 39, 42, 62],
+        backgroundColor: 'rgba(167,139,250,0.55)',
+        borderColor: '#a78bfa', borderWidth: 1, borderRadius: 6,
+      },
+      {
+        label: 'Repeat Rate (%)',
+        data: [28, 29, 20, 20],
+        backgroundColor: 'rgba(99,102,241,0.55)',
+        borderColor: '#6366f1', borderWidth: 1, borderRadius: 6,
+      },
+      {
+        label: '% of All Repeat Encounters',
+        data: [45, 28, 14, 13],
+        backgroundColor: 'rgba(251,146,60,0.55)',
+        borderColor: '#fb923c', borderWidth: 1, borderRadius: 6,
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'top', labels: { padding: 16 } },
+      tooltip: { callbacks: { label: c => c.dataset.label + ': ' + c.parsed.y + '%' } }
+    },
+    scales: {
+      y: { beginAtZero: true, max: 75, ticks: { callback: v => v + '%' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// --- TYPOLOGY RADAR: BEHAVIORAL PROFILE BY ENCOUNTER TYPOLOGY ---
+// Values reported directly from Figure 16 of the paper (K-modes cluster analysis)
+(function initTypologyRadar() {
+  var el = document.getElementById('chart-typology-radar');
+  if (!el) return;
+  new Chart(el, {
+    type: 'radar',
+    data: {
+      labels: [
+        'Depression',
+        'Anger',
+        'Confusion',
+        'Disorg. Speech',
+        'Delusions',
+        'Hallucinations',
+        'Scared',
+        'Manic',
+        'Substance',
+        'Unhoused'
+      ],
+      datasets: [
+        {
+          label: 'Minimal Presentation (n=328)',
+          data: [0, 17, 10, 2, 9, 12, 13, 5, 0, 33],
+          backgroundColor: 'rgba(129, 140, 248, 0.14)',
+          borderColor: 'rgba(165, 180, 252, 0.95)',
+          borderWidth: 2,
+          pointBackgroundColor: '#a5b4fc',
+          pointBorderColor: '#0f1629',
+          pointBorderWidth: 1.5,
+          pointRadius: 3.5,
+          pointHoverRadius: 6
+        },
+        {
+          label: 'Depressive Presentation (n=264)',
+          data: [100, 9, 11, 6, 3, 6, 10, 6, 33, 24],
+          backgroundColor: 'rgba(45, 212, 191, 0.14)',
+          borderColor: 'rgba(94, 234, 212, 0.95)',
+          borderWidth: 2,
+          pointBackgroundColor: '#5eead4',
+          pointBorderColor: '#0f1629',
+          pointBorderWidth: 1.5,
+          pointRadius: 3.5,
+          pointHoverRadius: 6
+        },
+        {
+          label: 'Substance-Involved (n=139)',
+          data: [0, 19, 22, 14, 11, 14, 17, 9, 100, 19],
+          backgroundColor: 'rgba(251, 146, 60, 0.14)',
+          borderColor: 'rgba(252, 211, 77, 0.95)',
+          borderWidth: 2,
+          pointBackgroundColor: '#fdba74',
+          pointBorderColor: '#0f1629',
+          pointBorderWidth: 1.5,
+          pointRadius: 3.5,
+          pointHoverRadius: 6
+        },
+        {
+          label: 'Acute Behavioral Crisis (n=130)',
+          data: [6, 25, 81, 77, 65, 29, 35, 58, 15, 36],
+          backgroundColor: 'rgba(167, 139, 250, 0.18)',
+          borderColor: 'rgba(167, 139, 250, 0.98)',
+          borderWidth: 2.25,
+          pointBackgroundColor: '#c4b5fd',
+          pointBorderColor: '#0f1629',
+          pointBorderWidth: 1.5,
+          pointRadius: 3.75,
+          pointHoverRadius: 6.5
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: {
+        padding: { top: 6, right: 24, bottom: 6, left: 24 }
+      },
+      plugins: {
+        legend: {
+          position: 'top',
+          align: 'center',
+          labels: {
+            padding: 18,
+            boxWidth: 12,
+            boxHeight: 12,
+            usePointStyle: true,
+            pointStyle: 'rectRounded',
+            color: '#cbd5e1',
+            font: { size: 12, family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(15, 22, 41, 0.96)',
+          titleColor: '#f1f5f9',
+          bodyColor: '#cbd5e1',
+          borderColor: 'rgba(148, 163, 184, 0.25)',
+          borderWidth: 1,
+          padding: 12,
+          titleFont: { size: 12, weight: '600' },
+          bodyFont: { size: 12 },
+          callbacks: {
+            label: function(c) { return '  ' + c.dataset.label + ': ' + c.parsed.r + '%'; }
+          }
+        }
+      },
+      scales: {
+        r: {
+          beginAtZero: true,
+          min: 0,
+          max: 100,
+          ticks: {
+            stepSize: 20,
+            color: 'rgba(148, 163, 184, 0.75)',
+            backdropColor: 'transparent',
+            font: { size: 10 },
+            showLabelBackdrop: false,
+            callback: function(v) { return v === 0 ? '' : v + '%'; }
+          },
+          grid: { color: 'rgba(148, 163, 184, 0.14)', lineWidth: 1 },
+          angleLines: { color: 'rgba(148, 163, 184, 0.18)', lineWidth: 1 },
+          pointLabels: {
+            color: '#e2e8f0',
+            font: { size: 12, weight: '600', family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" },
+            padding: 14
+          }
+        }
+      },
+      elements: {
+        line: { tension: 0 }
+      }
+    }
+  });
+})();
+
+// ═══════════════════════════════════════════
+// PAPER FIGURE REPLACEMENTS (native dark theme)
+// Data pulled directly from paper_20260404.md and Figures 2-8
+// ═══════════════════════════════════════════
+
+// Shared defaults for paper-figure charts
+var __paperGrid   = 'rgba(148, 163, 184, 0.09)';
+var __paperTick   = 'rgba(203, 213, 225, 0.78)';
+var __paperLabel  = '#e2e8f0';
+var __paperMuted  = 'rgba(148, 163, 184, 0.5)';
+
+function __paperTooltip() {
+  return {
+    backgroundColor: 'rgba(15, 22, 41, 0.96)',
+    titleColor: '#f1f5f9',
+    bodyColor: '#cbd5e1',
+    borderColor: 'rgba(148, 163, 184, 0.25)',
+    borderWidth: 1,
+    padding: 10,
+    titleFont: { size: 11, weight: '600' },
+    bodyFont: { size: 11 }
+  };
+}
+
+// --- FIGURE 2A: MONTHLY VOLUME ---
+(function initTemporalVolume() {
+  var el = document.getElementById('chart-temporal-volume');
+  if (!el) return;
+  var labels = ['Mar 24','Apr 24','May 24','Jun 24','Jul 24','Aug 24','Sep 24','Oct 24','Nov 24','Dec 24','Jan 25','Feb 25','Mar 25','Apr 25','May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26'];
+  var volume = [1,14,40,53,40,47,47,47,45,63,44,29,36,36,44,48,52,39,44,32,19,10,8,2];
+  var ma = volume.map(function(_, i) {
+    var s = Math.max(0, i - 1), e = Math.min(volume.length, i + 2);
+    var slice = volume.slice(s, e);
+    return +(slice.reduce(function(a,b){return a+b;},0) / slice.length).toFixed(1);
+  });
+  new Chart(el, {
+    data: {
+      labels: labels,
+      datasets: [
+        { type: 'bar', label: 'Monthly volume', data: volume,
+          backgroundColor: 'rgba(99, 102, 241, 0.55)', borderColor: 'rgba(165, 180, 252, 0.9)',
+          borderWidth: 1, borderRadius: 3, barPercentage: 0.78 },
+        { type: 'line', label: '3-mo moving avg', data: ma,
+          borderColor: '#a5b4fc', backgroundColor: 'rgba(99,102,241,0.08)',
+          borderWidth: 2, tension: 0.35, pointRadius: 0, pointHoverRadius: 4, fill: false }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top', align: 'end', labels: { color: __paperTick, font: { size: 10 }, boxWidth: 10, padding: 10, usePointStyle: true } },
+        tooltip: __paperTooltip()
+      },
+      scales: {
+        y: { beginAtZero: true, grid: { color: __paperGrid }, ticks: { color: __paperTick, font: { size: 10 } } },
+        x: { grid: { display: false }, ticks: { color: __paperTick, font: { size: 9 }, maxRotation: 45, minRotation: 45, autoSkip: false } }
+      }
+    }
+  });
+})();
+
+// --- FIGURE 2B: SEVERITY RATE BY MONTH ---
+(function initTemporalSeverity() {
+  var el = document.getElementById('chart-temporal-severity');
+  if (!el) return;
+  var labels = ['Mar 24','Apr 24','May 24','Jun 24','Jul 24','Aug 24','Sep 24','Oct 24','Nov 24','Dec 24','Jan 25','Feb 25','Mar 25','Apr 25','May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26'];
+  // Read from Figure 2 panel B
+  var sev = [100, 14, 22, 42, 28, 42, 25, 50, 38, 53, 50, 42, 62, 33, 36, 50, 43, 48, 40, 45, 45, 40, 38, 35];
+  var ma = sev.map(function(_, i) {
+    var s = Math.max(0, i - 1), e = Math.min(sev.length, i + 2);
+    var slice = sev.slice(s, e);
+    return +(slice.reduce(function(a,b){return a+b;},0) / slice.length).toFixed(1);
+  });
+  new Chart(el, {
+    data: {
+      labels: labels,
+      datasets: [
+        { type: 'line', label: 'Monthly severity (%)', data: sev,
+          borderColor: 'rgba(167, 139, 250, 0.65)', backgroundColor: 'rgba(167, 139, 250, 0.9)',
+          showLine: false, pointRadius: 3, pointHoverRadius: 5 },
+        { type: 'line', label: '3-mo moving avg', data: ma,
+          borderColor: '#c4b5fd', borderWidth: 2.25, tension: 0.35, pointRadius: 0, pointHoverRadius: 4, fill: false }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top', align: 'end', labels: { color: __paperTick, font: { size: 10 }, boxWidth: 10, padding: 10, usePointStyle: true } },
+        tooltip: __paperTooltip()
+      },
+      scales: {
+        y: { beginAtZero: true, max: 100, grid: { color: __paperGrid }, ticks: { color: __paperTick, font: { size: 10 }, callback: function(v){return v+'%';} } },
+        x: { grid: { display: false }, ticks: { color: __paperTick, font: { size: 9 }, maxRotation: 45, minRotation: 45, autoSkip: false } }
+      }
+    }
+  });
+})();
+
+// --- FIGURE 2C: REPEAT RATE BY MONTH ---
+(function initTemporalRepeat() {
+  var el = document.getElementById('chart-temporal-repeat');
+  if (!el) return;
+  var labels = ['Mar 24','Apr 24','May 24','Jun 24','Jul 24','Aug 24','Sep 24','Oct 24','Nov 24','Dec 24','Jan 25','Feb 25','Mar 25','Apr 25','May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26'];
+  var rep = [3, 7, 15, 22, 20, 23, 30, 22, 25, 20, 22, 26, 22, 20, 37, 25, 32, 28, 33, 38, 50, 30, 22, 15];
+  var ma = rep.map(function(_, i) {
+    var s = Math.max(0, i - 1), e = Math.min(rep.length, i + 2);
+    var slice = rep.slice(s, e);
+    return +(slice.reduce(function(a,b){return a+b;},0) / slice.length).toFixed(1);
+  });
+  new Chart(el, {
+    data: {
+      labels: labels,
+      datasets: [
+        { type: 'line', label: 'Monthly repeat (%)', data: rep,
+          borderColor: 'rgba(94, 234, 212, 0.65)', backgroundColor: 'rgba(94, 234, 212, 0.9)',
+          showLine: false, pointRadius: 3, pointHoverRadius: 5 },
+        { type: 'line', label: '3-mo moving avg', data: ma,
+          borderColor: '#5eead4', borderWidth: 2.25, tension: 0.35, pointRadius: 0, pointHoverRadius: 4, fill: false }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top', align: 'end', labels: { color: __paperTick, font: { size: 10 }, boxWidth: 10, padding: 10, usePointStyle: true } },
+        tooltip: __paperTooltip()
+      },
+      scales: {
+        y: { beginAtZero: true, max: 60, grid: { color: __paperGrid }, ticks: { color: __paperTick, font: { size: 10 }, callback: function(v){return v+'%';} } },
+        x: { grid: { display: false }, ticks: { color: __paperTick, font: { size: 9 }, maxRotation: 45, minRotation: 45, autoSkip: false } }
+      }
+    }
+  });
+})();
+
+// --- FIGURE 3: AGE DISTRIBUTION ---
+(function initAgeDist() {
+  var el = document.getElementById('chart-age-dist');
+  if (!el) return;
+  var labels = ['Under 18','18\u201329','30\u201339','40\u201349','50\u201359','60\u201369','70\u201379','80\u201389','90\u2013100'];
+  var counts = [87, 198, 187, 125, 104, 80, 35, 9, 1];
+  var colors = counts.map(function(_, i) {
+    return (i === 1 || i === 2) ? 'rgba(99, 102, 241, 0.85)' : 'rgba(148, 163, 184, 0.55)';
+  });
+  var borders = counts.map(function(_, i) {
+    return (i === 1 || i === 2) ? '#a5b4fc' : 'rgba(203, 213, 225, 0.5)';
+  });
+  new Chart(el, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Encounters',
+        data: counts,
+        backgroundColor: colors,
+        borderColor: borders,
+        borderWidth: 1.25,
+        borderRadius: 4,
+        barPercentage: 0.72
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: __paperTooltip(),
+        datalabels: false
+      },
+      scales: {
+        y: { beginAtZero: true, grid: { color: __paperGrid }, ticks: { color: __paperTick, font: { size: 10 } }, title: { display: true, text: 'Encounters', color: __paperTick, font: { size: 11 } } },
+        x: { grid: { display: false }, ticks: { color: __paperLabel, font: { size: 11, weight: '600' } } }
+      }
+    }
+  });
+})();
+
+// --- FIGURE 4: BEHAVIORAL INDICATORS (horizontal bar) ---
+(function initBehavioralIndicators() {
+  var el = document.getElementById('chart-behavioral-indicators');
+  if (!el) return;
+  var labels = ['Depression','Confusion','Delusions','Disorganized Speech','Angry/Uncooperative','Scared/Frightened','Manic','Hallucinations'];
+  var pcts = [31.6, 23.0, 16.3, 16.3, 16.1, 16.0, 14.1, 13.0];
+  var counts = [272, 198, 140, 140, 139, 138, 121, 112];
+  // Highlight Anger and Manic (strongest severity predictors)
+  var colors = labels.map(function(l) {
+    if (l === 'Angry/Uncooperative' || l === 'Manic') return 'rgba(167, 139, 250, 0.82)';
+    return 'rgba(94, 234, 212, 0.72)';
+  });
+  var borders = labels.map(function(l) {
+    if (l === 'Angry/Uncooperative' || l === 'Manic') return '#c4b5fd';
+    return '#5eead4';
+  });
+  new Chart(el, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Prevalence (%)',
+        data: pcts,
+        backgroundColor: colors,
+        borderColor: borders,
+        borderWidth: 1.25,
+        borderRadius: 4,
+        barPercentage: 0.72
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: Object.assign(__paperTooltip(), {
+          callbacks: {
+            label: function(c) {
+              return '  ' + c.parsed.x.toFixed(1) + '%  (n = ' + counts[c.dataIndex] + ')';
+            }
+          }
+        })
+      },
+      scales: {
+        x: { beginAtZero: true, max: 35, grid: { color: __paperGrid }, ticks: { color: __paperTick, font: { size: 10 }, callback: function(v){return v+'%';} } },
+        y: { grid: { display: false }, ticks: { color: __paperLabel, font: { size: 11, weight: '600' } } }
+      }
+    }
+  });
+})();
+
+// --- FIGURE 5A: HOUSING VOLUME ---
+(function initHousingVolume() {
+  var el = document.getElementById('chart-housing-volume');
+  if (!el) return;
+  new Chart(el, {
+    type: 'bar',
+    data: {
+      labels: ['Housed','Unhoused','Unknown','Facility'],
+      datasets: [{
+        data: [476, 244, 84, 57],
+        backgroundColor: ['rgba(99, 102, 241, 0.72)','rgba(251, 146, 60, 0.72)','rgba(148, 163, 184, 0.55)','rgba(94, 234, 212, 0.72)'],
+        borderColor: ['#a5b4fc','#fdba74','#cbd5e1','#5eead4'],
+        borderWidth: 1.25,
+        borderRadius: 4,
+        barPercentage: 0.66
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: Object.assign(__paperTooltip(), {
+          callbacks: {
+            label: function(c) {
+              var shares = ['55.3%','28.3%','9.8%','6.6%'];
+              return '  n = ' + c.parsed.y + ' (' + shares[c.dataIndex] + ')';
+            }
+          }
+        })
+      },
+      scales: {
+        y: { beginAtZero: true, grid: { color: __paperGrid }, ticks: { color: __paperTick, font: { size: 10 } }, title: { display: true, text: 'Encounters', color: __paperTick, font: { size: 11 } } },
+        x: { grid: { display: false }, ticks: { color: __paperLabel, font: { size: 11, weight: '600' } } }
+      }
+    }
+  });
+})();
+
+// --- FIGURE 5B: HOUSING RATES (grouped severity + repeat) ---
+(function initHousingRates() {
+  var el = document.getElementById('chart-housing-rates');
+  if (!el) return;
+  new Chart(el, {
+    type: 'bar',
+    data: {
+      labels: ['Housed','Unhoused','Facility','Unknown'],
+      datasets: [
+        { label: 'Severity rate', data: [43.5, 29.9, 45.6, 50.0],
+          backgroundColor: 'rgba(167, 139, 250, 0.72)', borderColor: '#c4b5fd', borderWidth: 1.25, borderRadius: 4 },
+        { label: 'Repeat rate',   data: [24.0, 33.6, 15.4, 12.8],
+          backgroundColor: 'rgba(99, 102, 241, 0.72)', borderColor: '#a5b4fc', borderWidth: 1.25, borderRadius: 4 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top', align: 'end', labels: { color: __paperTick, font: { size: 10 }, boxWidth: 10, padding: 10, usePointStyle: true } },
+        tooltip: Object.assign(__paperTooltip(), {
+          callbacks: { label: function(c) { return '  ' + c.dataset.label + ': ' + c.parsed.y.toFixed(1) + '%'; } }
+        })
+      },
+      scales: {
+        y: { beginAtZero: true, max: 60, grid: { color: __paperGrid }, ticks: { color: __paperTick, font: { size: 10 }, callback: function(v){return v+'%';} } },
+        x: { grid: { display: false }, ticks: { color: __paperLabel, font: { size: 11, weight: '600' } } }
+      }
+    }
+  });
+})();
+
+// --- FIGURE 6A: CALL TYPE VOLUME ---
+(function initCallTypeVolume() {
+  var el = document.getElementById('chart-calltype-volume');
+  if (!el) return;
+  var data = [
+    ['Suicidal / Self-Harm', 38.6],
+    ['Person Needs Assistance', 22.1],
+    ['Disturbance', 8.3],
+    ['Welfare Check', 7.2],
+    ['Other / Admin / Unknown', 3.6],
+    ['Emergency Evaluation', 3.5],
+    ['Trespass / Disorderly', 3.3],
+    ['Suspicious Activity', 2.7],
+    ['Medical', 2.5],
+    ['Missing Person', 2.3],
+    ['Mental Health Other', 2.1],
+    ['Juvenile / Runaway', 2.0],
+    ['Person to be Removed', 1.9],
+    ['Assault / Violence', 1.5]
+  ];
+  new Chart(el, {
+    type: 'bar',
+    data: {
+      labels: data.map(function(d){return d[0];}),
+      datasets: [{
+        data: data.map(function(d){return d[1];}),
+        backgroundColor: data.map(function(d, i) {
+          return i < 2 ? 'rgba(99, 102, 241, 0.82)' : 'rgba(99, 102, 241, 0.45)';
+        }),
+        borderColor: data.map(function(d, i) {
+          return i < 2 ? '#a5b4fc' : 'rgba(165, 180, 252, 0.55)';
+        }),
+        borderWidth: 1,
+        borderRadius: 3,
+        barPercentage: 0.82
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: Object.assign(__paperTooltip(), {
+          callbacks: { label: function(c) { return '  ' + c.parsed.x.toFixed(1) + '% of encounters'; } }
+        })
+      },
+      scales: {
+        x: { beginAtZero: true, max: 45, grid: { color: __paperGrid }, ticks: { color: __paperTick, font: { size: 10 }, callback: function(v){return v+'%';} } },
+        y: { grid: { display: false }, ticks: { color: __paperLabel, font: { size: 10, weight: '600' } } }
+      }
+    }
+  });
+})();
+
+// --- FIGURE 6B: CALL TYPE SEVERITY ---
+(function initCallTypeSeverity() {
+  var el = document.getElementById('chart-calltype-severity');
+  if (!el) return;
+  var data = [
+    ['Trespass / Disorderly', 78.6],
+    ['Assault / Violence', 69.2],
+    ['Mental Health Other', 65.0],
+    ['Emergency Evaluation', 60.0],
+    ['Suspicious Activity', 56.5],
+    ['Disturbance', 55.6],
+    ['Welfare Check', 51.6],
+    ['Juvenile / Runaway', 50.0],
+    ['Other / Admin / Unknown', 48.4],
+    ['Missing Person', 45.0],
+    ['Person to be Removed', 41.8],
+    ['Medical', 41.7],
+    ['Suicidal / Self-Harm', 39.9],
+    ['Person Needs Assistance', 15.3]
+  ];
+  new Chart(el, {
+    type: 'bar',
+    data: {
+      labels: data.map(function(d){return d[0];}),
+      datasets: [{
+        data: data.map(function(d){return d[1];}),
+        backgroundColor: data.map(function(d) {
+          var v = d[1];
+          if (v >= 60) return 'rgba(167, 139, 250, 0.82)';
+          if (v >= 40) return 'rgba(251, 146, 60, 0.72)';
+          return 'rgba(94, 234, 212, 0.65)';
+        }),
+        borderColor: data.map(function(d) {
+          var v = d[1];
+          if (v >= 60) return '#c4b5fd';
+          if (v >= 40) return '#fdba74';
+          return '#5eead4';
+        }),
+        borderWidth: 1,
+        borderRadius: 3,
+        barPercentage: 0.82
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: Object.assign(__paperTooltip(), {
+          callbacks: { label: function(c) { return '  Severity: ' + c.parsed.x.toFixed(1) + '%'; } }
+        })
+      },
+      scales: {
+        x: { beginAtZero: true, max: 100, grid: { color: __paperGrid }, ticks: { color: __paperTick, font: { size: 10 }, callback: function(v){return v+'%';} } },
+        y: { grid: { display: false }, ticks: { color: __paperLabel, font: { size: 10, weight: '600' } } }
+      }
+    }
+  });
+})();
+
+// --- FIGURE 8A: RESPONSE MODEL VOLUME ---
+(function initResponseVolume() {
+  var el = document.getElementById('chart-response-volume');
+  if (!el) return;
+  var data = [
+    ['Law Enforcement Only (MPD)', 39.5],
+    ['Behavioral Health Only (MST)', 28.5],
+    ['Co-Response (MPD+MST)', 17.5],
+    ['Law Enforcement Only (MCSO)', 10.9],
+    ['Co-Response (MCSO+MST)', 2.8],
+    ['Unknown', 0.5],
+    ['Other', 0.3]
+  ];
+  new Chart(el, {
+    type: 'bar',
+    data: {
+      labels: data.map(function(d){return d[0];}),
+      datasets: [{
+        data: data.map(function(d){return d[1];}),
+        backgroundColor: 'rgba(99, 102, 241, 0.72)',
+        borderColor: '#a5b4fc',
+        borderWidth: 1.25,
+        borderRadius: 4,
+        barPercentage: 0.72
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: Object.assign(__paperTooltip(), {
+          callbacks: { label: function(c) { return '  ' + c.parsed.x.toFixed(1) + '% of encounters'; } }
+        })
+      },
+      scales: {
+        x: { beginAtZero: true, max: 45, grid: { color: __paperGrid }, ticks: { color: __paperTick, font: { size: 10 }, callback: function(v){return v+'%';} } },
+        y: { grid: { display: false }, ticks: { color: __paperLabel, font: { size: 10, weight: '600' } } }
+      }
+    }
+  });
+})();
+
+// --- FIGURE 8B: RESPONSE MODEL SEVERITY ---
+(function initResponseSeverity() {
+  var el = document.getElementById('chart-response-severity');
+  if (!el) return;
+  var data = [
+    ['Law Enforcement Only (MPD)', 65.0],
+    ['Co-Response (MPD+MST)', 50.3],
+    ['Law Enforcement Only (MCSO)', 34.0],
+    ['Other', 33.3],
+    ['Co-Response (MCSO+MST)', 33.3],
+    ['Behavioral Health Only (MST)', 4.1],
+    ['Unknown', 0.0]
+  ];
+  new Chart(el, {
+    type: 'bar',
+    data: {
+      labels: data.map(function(d){return d[0];}),
+      datasets: [{
+        data: data.map(function(d){return d[1];}),
+        backgroundColor: data.map(function(d) {
+          var v = d[1];
+          if (v >= 60) return 'rgba(167, 139, 250, 0.85)';
+          if (v >= 40) return 'rgba(251, 146, 60, 0.78)';
+          if (v >= 20) return 'rgba(251, 146, 60, 0.65)';
+          return 'rgba(94, 234, 212, 0.72)';
+        }),
+        borderColor: data.map(function(d) {
+          var v = d[1];
+          if (v >= 60) return '#c4b5fd';
+          if (v >= 40) return '#fdba74';
+          if (v >= 20) return '#fb923c';
+          return '#5eead4';
+        }),
+        borderWidth: 1.25,
+        borderRadius: 4,
+        barPercentage: 0.72
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: Object.assign(__paperTooltip(), {
+          callbacks: { label: function(c) { return '  Severity: ' + c.parsed.x.toFixed(1) + '%'; } }
+        }),
+        annotation: false
+      },
+      scales: {
+        x: { beginAtZero: true, max: 100, grid: { color: __paperGrid }, ticks: { color: __paperTick, font: { size: 10 }, callback: function(v){return v+'%';} } },
+        y: { grid: { display: false }, ticks: { color: __paperLabel, font: { size: 10, weight: '600' } } }
+      }
+    }
+  });
+})();
+
+// --- CIT ACADEMY KSA TRAJECTORY ---
+(function initKsaChart() {
+  var el = document.getElementById('chart-ksa-trajectory');
+  if (!el) return;
+  new Chart(el, {
+    type: 'line',
+    data: {
+      labels: ['Pre', 'Post', '3 to 6 mo', '12 mo'],
+      datasets: [
+        {
+          label: 'Composite KSA Index',
+          data: [2.57, 3.57, 3.43, 3.53],
+          borderColor: '#a5b4fc',
+          backgroundColor: 'rgba(99, 102, 241, 0.18)',
+          fill: true,
+          tension: 0.35,
+          borderWidth: 2.5,
+          pointRadius: 6,
+          pointBackgroundColor: '#a5b4fc',
+          pointBorderColor: '#0f1629',
+          pointBorderWidth: 2
+        },
+        {
+          label: 'Baseline (Pre mean)',
+          data: [2.57, 2.57, 2.57, 2.57],
+          borderColor: 'rgba(148, 163, 184, 0.45)',
+          borderDash: [5, 5],
+          borderWidth: 1.5,
+          pointRadius: 0,
+          fill: false
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top', labels: { padding: 14, boxWidth: 18 } },
+        tooltip: {
+          callbacks: {
+            label: function(c) { return c.dataset.label + ': ' + c.parsed.y.toFixed(2); }
+          }
+        }
+      },
+      scales: {
+        y: {
+          min: 1, max: 5,
+          ticks: { stepSize: 1, callback: function(v) { return v.toFixed(1); } },
+          grid: { color: 'rgba(255,255,255,0.04)' },
+          title: { display: true, text: 'KSA Index (1 to 5)', color: '#94a3b8' }
+        },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+})();
+
+// ═══════════════════════════════════════════
+// SEVERITY PREDICTION SIMULATOR
+// ═══════════════════════════════════════════
+function runPrediction() {
+  const response = document.getElementById('sim-response').value;
+  const calltype = document.getElementById('sim-calltype').value;
+  const housing = document.getElementById('sim-housing').value;
+  const confused = document.getElementById('sim-confused').checked;
+  const disorg = document.getElementById('sim-disorg').checked;
+  const substance = document.getElementById('sim-substance').checked;
+  const scared = document.getElementById('sim-scared').checked;
+  const depressed = document.getElementById('sim-depressed').checked;
+  const delusions = document.getElementById('sim-delusions').checked;
+  const manic = document.getElementById('sim-manic').checked;
+  const halluc = document.getElementById('sim-halluc').checked;
+
+  // Logistic model based on actual study coefficients
+  let logit = -1.8; // intercept
+
+  // Response model (relative to MST baseline)
+  const respFx = { mst: 0, co: 1.85, le: 2.40 };
+  logit += respFx[response] || 0;
+
+  // Call type effects
+  const callFx = { suicidal: 0.66, welfare: -1.05, assist: -0.30, disturbance: 0.40 };
+  logit += callFx[calltype] || 0;
+
+  // Housing
+  if (housing === 'housed') logit -= 0.46;
+
+  // Behavioral indicators (actual coefficients from paper)
+  if (confused) logit += 0.70;
+  if (disorg) logit += 0.67;
+  if (substance) logit += 0.62;
+  if (scared) logit -= 0.47;
+  // Note: depression, delusions, manic, hallucinations are NOT statistically
+  // significant predictors in the model (they overlap with other variables)
+  if (depressed) logit += 0.0;
+  if (delusions) logit += 0.0;
+  if (manic) logit += 0.0;
+  if (halluc) logit += 0.0;
+
+  const prob = 1 / (1 + Math.exp(-logit));
+  const pct = Math.round(prob * 100);
+
+  // Show results
+  document.getElementById('result-placeholder').style.display = 'none';
+  const out = document.getElementById('result-output');
+  out.classList.add('show');
+
+  const pctEl = document.getElementById('risk-pct');
+  pctEl.textContent = pct + '%';
+  pctEl.style.color = pct > 55 ? '#a78bfa' : pct > 30 ? '#fb923c' : '#38bdf8';
+
+  // Contributing factors
+  const factors = [
+    { name: 'Response', val: respFx[response], max: 2.4 },
+    { name: 'Call Type', val: callFx[calltype] || 0, max: 1.05 },
+    { name: 'Confusion', val: confused ? 0.70 : 0, max: 0.70 },
+    { name: 'Disorg. Speech', val: disorg ? 0.67 : 0, max: 0.67 },
+    { name: 'Substance', val: substance ? 0.62 : 0, max: 0.62 },
+    { name: 'Housing', val: housing === 'housed' ? -0.46 : 0, max: 0.46 },
+    { name: 'Scared', val: scared ? -0.47 : 0, max: 0.47 },
+  ].filter(f => f.val !== 0);
+
+  let fHtml = '<h4>Contributing Factors</h4>';
+  factors.forEach(f => {
+    const up = f.val > 0;
+    const w = Math.round(Math.abs(f.val) / 2.4 * 100);
+    fHtml += `<div class="factor-row">
+      <span class="factor-name">${f.name}</span>
+      <div class="factor-track"><div class="factor-fill ${up ? 'up' : 'down'}" style="width:${w}%"></div></div>
+      <span class="factor-val" style="color:${up ? '#a78bfa' : '#38bdf8'}">${up ? '+' : ''}${f.val.toFixed(2)}</span>
+    </div>`;
+  });
+  document.getElementById('factor-list').innerHTML = fHtml;
+
+  // Typology classification
+  let cluster, desc, borderColor;
+  const behavCount = [confused, disorg, delusions, manic, halluc].filter(Boolean).length;
+
+  if (substance && !confused && !disorg) {
+    cluster = 'Substance-Involved';
+    desc = 'Substance involvement dominates. Moderate severity (42%), lower repeat rate (20%). Needs connection to substance use services.';
+    borderColor = 'var(--amber)';
+  } else if (behavCount >= 2) {
+    cluster = 'Acute Behavioral Crisis';
+    desc = 'Multiple cognitive/behavioral indicators present. Highest severity cluster (62%) but lowest repeat rate (20%). Immediate de-escalation focus.';
+    borderColor = 'var(--rose)';
+  } else if (depressed || (calltype === 'suicidal' && behavCount === 0)) {
+    cluster = 'Depressive Presentation';
+    desc = 'Depressed mood or suicidal context. Severity at 39%, highest repeat rate (29%). Sustained mental health follow-up indicated.';
+    borderColor = 'var(--teal)';
+  } else {
+    cluster = 'Minimal Presentation';
+    desc = 'Few dominant behavioral markers. Lowest severity (33%) but generates 45% of all repeat encounters. Structured follow-up is critical.';
+    borderColor = 'var(--accent)';
+  }
+
+  document.getElementById('cluster-box').innerHTML = `<h4 style="color:${borderColor}">Likely Typology: ${cluster}</h4><p>${desc}</p>`;
+  document.getElementById('cluster-box').style.borderLeftColor = borderColor;
+}
+</script>
+</body>
+</html>
