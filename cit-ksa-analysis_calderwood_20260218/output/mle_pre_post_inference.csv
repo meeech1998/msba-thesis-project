@@ -1,0 +1,9 @@
+metric,mean_pre,mean_post,difference,t_stat,p_value,cohens_d
+How well prepared do you feel to appropriately engage with someone experiencing a mental health crisis? Select one.,2.733,4.0,1.267,10.717,0.0,3.307
+How aware are you of community resources available to people living with mental illness? Select one.,2.467,3.714,1.248,4.688,0.0002,1.843
+How familiar are you with the roles of various actors or organizations in the mental health system? Examples of actors or organizations include things like different types of mental health profess...,2.4,3.571,1.171,4.866,0.0005,2.273
+How knowledgeable are you about civil commitment laws? Select one.,2.133,3.143,1.01,4.22,0.0004,1.54
+How would you rate your confidence in using de-escalation skills to appropriately engage with someone experiencing a mental health crisis? Select one.,2.867,3.857,0.99,5.069,0.0001,2.067
+How comfortable are you with your current knowledge of mental illness? Select one.,2.6,3.571,0.971,3.74,0.0022,1.606
+How would you rate your comfort level in appropriately engaging with someone experiencing a mental health crisis? Select one.,2.867,3.571,0.705,2.911,0.0136,1.35
+How knowledgeable are you about professional liability considerations that could arise when professionally engaging with someone in a mental health crisis? Select one.,2.467,3.143,0.676,2.19,0.0509,1.032
