@@ -1,0 +1,169 @@
+three_ps_calderwood.txt
+• Each week add a new section (marked with the date) to the top of that text file and answer the following:
+
+
+04/20/26
+Progress: What have you accomplished since last week’s post?
+-4/14 met with andrew to discuss digital portfolio (30 m)
+-04/16 presentation prep (3hrs)
+-4/17 met with mary & presentation prep (4hrs)
+-4/18 presentation prep (6hrs)
+-4/19 presentation record (7hrs)
+Problems: What are you stuck on or struggling with?
+- condensing into just 10 minutes
+Plans: What do you intend to accomplish between now and next week’s post?
+- digital portfolio, written report, peer reviews
+
+04/13/26
+Progress: What have you accomplished since last week’s post?
+- 04/08/26 digital portfolio (2hrs)
+- 04/09/26 peer review reports/ digital portfolio (6hrs)
+- 04/10/26 digital portfoli piece (6hrs)
+- 04/11/26 presentation prep (2.5hrs)
+Problems: What are you stuck on or struggling with?
+- All good.
+Plans: What do you intend to accomplish between now and next week’s post?
+- Submit presentation
+
+04/06/26
+Progress: What have you accomplished since last week’s post?
+-03/31/26 written report revision (2hrs)
+-04/02/26 written report revision (6hrs)
+-04/03/26 written report revision (6 hrs)
+Problems: What are you stuck on or struggling with?
+- All good here.
+Plans: What do you intend to accomplish between now and next week’s post?
+- digital portfoli piece
+- peer review reports
+
+03/29/26
+Progress: What have you accomplished since last week’s post?
+-3/25 revsions, github examples (4hrs)
+-3/26 revisions, meet with andrew, digital portfolio (8hrs)
+-3/27 digital portfolio, revisions (8hrs)
+Problems: What are you stuck on or struggling with?
+- modeling limitations & knowing which models to use with all the dimensions of the analysis
+Plans: What do you intend to accomplish between now and next week’s post?
+- finish digital portfolio
+- revision done
+
+
+03/23/26
+Progress: What have you accomplished since last week’s post?
+- 3/16 final data cleaning, analysis for meeting with providence, modeling (9hr)
+- 3/17 meeting with providence: use case discovery, modeling (9hr)
+- 3/18 written report, github examples, & digital portfolio (8hrs)
+- 3/19 written report, github examples, & digital portfolio (8hrs)
+- 3/20 written report, github examples, & digital portfolio (8hrs)
+Problems: What are you stuck on or struggling with?
+- Things are looking pretty good.
+Plans: What do you intend to accomplish between now and next week’s post?
+- I would like to work on my interactive piece next week.
+
+03/15/26
+BREAK
+
+03/08/26
+Progress: What have you accomplished since last week’s post?
+- 3/6 cleaned data & github repo (4hrs)
+- 3/7 modeling prep (3 hrs)
+Problems: What are you stuck on or struggling with?
+- LERMS bulk edit
+Plans: What do you intend to accomplish between now and next week’s post?
+-  Modeling progress - consolidate all modeling ideas for execution
+
+03/01/26
+Progress: What have you accomplished since last week’s post?
+- sent training written report to Mary and recieved feedback (1hr)
+- cleaned data and accessed lerms (4hrs)
+Problems: What are you stuck on or struggling with?
+- cleaning data of all initials in notes field
+- post disposition in lerms all seperate from data set
+Plans: What do you intend to accomplish between now and next week’s post?
+- cleaning data of all initials in notes field
+- beginning to model data 
+
+02/22/26
+Progress: What have you accomplished since last week’s post?
+- 2/17 KSA Code clean up & written report (4 hrs)
+- 2/18 KSA Written Report (2 hrs)
+- 2/19 Meeting with Mary - CJIS email access and data cleaning planning (4 hrs)
+- 2/20 3 Ps, Written report, mental health learning (2 hrs)
+Problems: What are you stuck on or struggling with?
+- Will I be able to get the hospital disposition outcomes for response variables?
+- What types of modeling will be the most important?
+Plans: What do you intend to accomplish between now and next week’s post?
+- Data Cleaning in office
+
+02/15/26
+Progress: What have you accomplished since last week’s post?
+- 2/9 CJIS, Mock data set, review feedback (1 hr)
+- 2/10 Mock data set graphs (3 hrs)
+- 2/11 mock data set graphs (4 hrs) KSA training data set load and data analysis (2hrs)
+- 2/12 KSA data analysis & written report (2 hrs)
+Problems: What are you stuck on or struggling with?
+- Are there any additional response variables to draw from main dataset
+- Automated scanning options for hardcopies of form
+- Alchemer workflow & capabilities (the chosen form software moving forward)
+- What outcomes of MPD and hospital can be seen by CIT and what data can be shown to them?
+Plans: What do you intend to accomplish between now and next week’s post?
+- Prospective client info
+- Feedback for mock dataset
+- Meeting with hospital & upper management
+
+
+02/08/26
+Progress: What have you accomplished since last week’s post?
+- 2/2 Meeting with Andrew & prep (1 hr)
+- 2/5 Reviewed work session feedback video & mock dashboard (1 hr)
+- 2/7 Work session reviews & mack dashboard (2 hr)
+Problems: What are you stuck on or struggling with?
+- Modeling ideas for advanced modeling
+- User needs 
+- Data limitations
+Plans: What do you intend to accomplish between now and next week’s post?
+- Training data set finished 1st draft
+- Mock data set finished
+- Written report started for static data set
+- CJIS training for MPD
+
+02/02/26
+Progress: What have you accomplished since last week’s post?
+- (1/26) Met with Andrew. Discussed the action plan and project structure. Reviewed meeting and wrote out questions for client (2 hour)
+- (1/27) Drafted 3 Ps, added more questions for Mary, Started working doc, researched methods for data identifiers for sensitive data removal, talked to Trevorabout being my prospective client. (3 hour)
+-(1/28) Created mock up dashboard outline, recorded working doc. (2 hour)
+-(1/29) Mock dashboard outline & Referal Form brief. Went into MPD for data cleaning, client interview, and additional admin items (fingerprints). (4 hours)
+-(1/30) Met with simona, Mock Dashboard build (4 hours)
+Problems: What are you stuck on or struggling with?
+- This week I had to work through how to get the data accessible to my work station by removing the sensitive data. 
+-Somethings I am trying to wrap my head around is:
+--The user journey of the forms
+--All the stakeholders important and their needs
+--Getting in contact with those stakeholders to identify goals and purpose of the forms
+--How the hand off will look from getting their form redesign to a usable system (Power BI). I dont yet know how that will look.
+--How the officer training component of this project will play into the scope of my project and when and how I will work on that.
+Plans: What do you intend to accomplish between now and next week’s post?
+- Cleaned data
+- Access to all on my machines including officer training 
+- Sent Mary notes on mockup
+- Prospective client submitted
+- Meeting with simona and andrew to review work
+- Work on Mock up 2
+- meetings planned w/ hospital, upper management, field work
+- program set for hand off
+- starting form recreation
+
+01/26/25
+Progress: What have you accomplished since last week’s post?
+- Leading up to Jan 21 I met with Andrew to go over new project proposals & had an introduction meeting with Mary from the police department to go over details. Regular coorespondence to set up meeting times. (3-4 hours)
+- On Jan 21 (wednesday) I worked on participation, watching videos, reading the syllabus, ordering the writing science in plain english book, outlining dates, scheduling 1-1 meetings & emails to Mary at the Police Department to set up a meeting time in person. (5 hours)
+- Jan 22 had an orientation with the police department, met in person with mary. Looked at our first meeting notes and created new ideas with possible other data needed and potential goals. (4 hours)
+- Jan 23 Met with Simona a UM connection to discuss options for project via zoom. Started looking at data. (5 hours)
+- Saturday submitted 3 Ps & Project proposal. 
+Problems: What are you stuck on or struggling with?
+- On Jan 22 I was struggling to create a sollid plan becuase of the limited data I have this far & not being able to expolore the data is making it hard to know what other discoveries I can piggyback off of. 
+Plans: What do you intend to accomplish between now and next week’s post?
+- Work session video
+- All ideation for moving forward
+- Meeting with Andrew, Mary & Simona to solidify ideas
+
