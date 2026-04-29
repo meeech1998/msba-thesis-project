@@ -1,6 +1,26 @@
 three_ps_calderwood.txt
 • Each week add a new section (marked with the date) to the top of that text file and answer the following:
 
+05/04/26
+Progress: What have you accomplished since last week’s post?
+-4/27 met with andrew to discuss digital portfolio (30 m)
+-04/28 code, written report & digital portfolio (3hrs)
+-4/29 written report, code, presentation (4hrs)
+-4/30 presentation prep & finalize all deliverable (6hrs)
+-5/1 presentation(7hrs)
+Problems: What are you stuck on or struggling with?
+- making sure my presentation is directed to my prospective client.
+
+04/27/26
+Progress: What have you accomplished since last week’s post?
+-4/22 rerecord presentation (2hrs)
+-04/23 peer reviews & written report (4hrs)
+-4/24 digital portfolio & Github (4hrs)
+-4/26 digital portfolio & code revise (4 hrs)
+Problems: What are you stuck on or struggling with?
+- keeping presentation insightful but short
+Plans: What do you intend to accomplish between now and next week’s post?
+- written report finalized, digital portfolio finalized 
 
 04/20/26
 Progress: What have you accomplished since last week’s post?
@@ -61,7 +81,7 @@ Plans: What do you intend to accomplish between now and next week’s post?
 - I would like to work on my interactive piece next week.
 
 03/15/26
-BREAK
+BREAK - I had the flu. 
 
 03/08/26
 Progress: What have you accomplished since last week’s post?
