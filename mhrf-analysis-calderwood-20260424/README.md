@@ -59,7 +59,7 @@ mhrf-analysis-calderwood-20260424/
 
 | File | Description |
 |---|---|
-| `mhrf_analysis_ready.csv` | Cleaned, analysis-ready dataset — primary input for all scripts |
+| `mhrf_analysis_ready.csv` | Cleaned, analysis-ready dataset - primary input for all scripts |
 | `mhrf_data_raw.xlsx` | Raw MHRF export from MPD |
 
 The dataset captures mental health-related crisis calls responded to by MPD, MST (Mobile Support Team), and co-response units. Each record represents a single MHRF encounter and includes demographic, behavioral, housing, call type, triage, and disposition fields.
@@ -140,8 +140,8 @@ The dataset captures mental health-related crisis calls responded to by MPD, MST
 | File | Contents |
 |---|---|
 | `summary_statistics.csv` | Descriptive summary of all key variables |
-| `table_severity_coefficients.csv` | Logistic regression odds ratios — severity model |
-| `table_repeat_coefficients.csv` | Logistic regression odds ratios — repeat encounter model |
+| `table_severity_coefficients.csv` | Logistic regression odds ratios - severity model |
+| `table_repeat_coefficients.csv` | Logistic regression odds ratios - repeat encounter model |
 | `table_agency_comparison.csv` | Comparison of outcomes across response agency types |
 | `table_cluster_profiles.csv` | Behavioral health cluster profiles (K-Modes) |
 
@@ -219,7 +219,7 @@ These scripts implement an earlier analysis pipeline and are kept for reference.
 ## Reproducibility Notes
 
 - All outputs are generated programmatically from `mhrf_analysis_ready.csv`
-- Original thesis figures are preserved in `outputs/figures/original/` — do not overwrite
+- Original thesis figures are preserved in `outputs/figures/original/` - do not overwrite
 - CB-safe versions in `outputs/figures/cb_safe/` can be regenerated at any time
 - To swap originals with CB-safe versions: `cp outputs/figures/cb_safe/*.png outputs/figures/original/` (only do this once you are confident in the result)
 
@@ -238,7 +238,7 @@ These scripts implement an earlier analysis pipeline and are kept for reference.
 ## Author
 
 **Michelle Calderwood**
-MSBA Capstone — University of Montana
+MSBA Capstone - University of Montana
 michelle.calderwood@umontana.edu
 
 ---
