@@ -76,7 +76,7 @@ Live at: **https://meeech1998.github.io/msba-thesis-project/**
 
 ### 4. Weekly Progress Log
 
-A running weekly journal (January 2026 – May 2026) documenting project progress using the "3 Ps" framework: **Progress**, **Problems**, and **Plans** — located in three_ps_calderwood.txt.
+A running weekly journal (January 2026 – May 2026) documenting project progress using the "3 Ps" framework: **Progress**, **Problems**, and **Plans** - located in three_ps_calderwood.txt.
 
 ---
 
@@ -129,7 +129,7 @@ python3 scripts/full_analysis.py
 ## Author
 
 **Michelle Calderwood**
-MSBA Capstone — University of Montana
+MSBA Capstone - University of Montana
 michelle.calderwood@umontana.edu
 
 ---
