@@ -103,29 +103,25 @@ The dataset captures mental health-related crisis calls responded to by MPD, MST
 
 ## Thesis Figures (17 Total)
 
-| Figure | Title | Generation Method |
-|---|---|---|
-| figure_02 | Temporal Dynamics | Source regenerated |
-| figure_03 | Age Distribution | Source regenerated |
-| figure_04 | Behavioral Indicators | Source regenerated |
-| figure_05 | Housing Status | Source regenerated |
-| figure_06 | Call Type Distribution | Source regenerated |
-| figure_07 | Spatial Distribution | Pixel-recolored only |
-| figure_08 | Response Model | Source regenerated |
-| figure_09 | Triage Within Call Type | Source regenerated |
-| figure_10 | Severity Coefficients | Source regenerated |
-| figure_11 | PCA Scree Plot | Pixel-recolored only |
-| figure_12 | Model Comparison | Pixel-recolored only |
-| figure_13 | ROC Curves | Source regenerated |
-| figure_14 | Kaplan-Meier Curves | Pixel-recolored only |
-| figure_15 | Cox Hazard Ratios | Pixel-recolored only |
-| figure_16 | Cluster Profiles | Source regenerated |
-| figure_17 | Cluster Outcomes | Source regenerated |
-| figure_18 | Frequency vs. Impact | Source regenerated |
-
-Figures are stored in two versions:
-- `outputs/figures/original/` — original thesis colors. **Do not overwrite.**
-- `outputs/figures/cb_safe/` — color-blind-safe Tableau palette, safe to regenerate.
+| Figure | Title |
+|---|---|
+| figure_02 | Temporal Dynamics |
+| figure_03 | Age Distribution |
+| figure_04 | Behavioral Indicators |
+| figure_05 | Housing Status |
+| figure_06 | Call Type Distribution |
+| figure_07 | Spatial Distribution |
+| figure_08 | Response Model |
+| figure_09 | Triage Within Call Type |
+| figure_10 | Severity Coefficients |
+| figure_11 | PCA Scree Plot |
+| figure_12 | Model Comparison |
+| figure_13 | ROC Curves |
+| figure_14 | Kaplan-Meier Curves |
+| figure_15 | Cox Hazard Ratios |
+| figure_16 | Cluster Profiles |
+| figure_17 | Cluster Outcomes |
+| figure_18 | Frequency vs. Impact |
 
 ### Color-Blind-Safe Palette
 
